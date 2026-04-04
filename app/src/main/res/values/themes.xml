@@ -1,0 +1,16 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+
+    <style name="Theme.DatingApp" parent="android:Theme.Material.Light.NoActionBar" />
+
+    <style name="Theme.App.Splash" parent="Theme.SplashScreen">
+        <!-- Make it invisible -->
+        <item name="windowSplashScreenBackground">#1B0E27</item>
+        <item name="windowSplashScreenAnimatedIcon">@mipmap/app_icon</item>
+        <item name="android:windowNoTitle">true</item> <!-- Force no title -->
+        <item name="android:windowActionBar">false</item> <!-- Disable action bar -->
+        <!-- After splash -->
+        <item name="postSplashScreenTheme">@style/Theme.DatingApp</item>
+    </style>
+
+</resources>
