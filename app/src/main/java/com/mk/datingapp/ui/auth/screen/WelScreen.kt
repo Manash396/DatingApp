@@ -102,7 +102,8 @@ fun WelScreen(
                     modifier = Modifier.clickable {
                         navController.navigate("login")
                         {
-                            popUpTo("wel") { inclusive = true }
+                            // keeping the wel screen (start destination of a nested graph)
+                            popUpTo("wel") { inclusive = false }
                         }
                     }
                 )

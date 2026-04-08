@@ -63,6 +63,8 @@ dependencies {
 
     implementation("androidx.compose.material:material-icons-extended")
 
+    implementation("com.google.android.gms:play-services-auth:20.7.0")
+
     implementation(libs.androidx.compose.ui.graphics)
     implementation(libs.androidx.compose.ui.tooling.preview)
     implementation(libs.androidx.compose.material3)
