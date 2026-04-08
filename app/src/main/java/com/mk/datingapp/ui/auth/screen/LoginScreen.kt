@@ -1,5 +1,6 @@
 package com.mk.datingapp.ui.auth.screen
 
+import android.util.Log
 import androidx.compose.foundation.background
 import androidx.compose.foundation.clickable
 import androidx.compose.foundation.layout.Arrangement
@@ -20,6 +21,7 @@ import androidx.compose.foundation.verticalScroll
 import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
+import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.remember
 import androidx.compose.ui.Alignment
@@ -54,8 +56,10 @@ import com.mk.datingapp.ui.auth.component.SocialButton
 @Composable
 fun LoginScreen(
     onLoginClick: () -> Unit,
+    onGoogleClick:() -> Unit,
     navController: NavController
 ) {
+
 
 
     val composition by rememberLottieComposition(
@@ -207,7 +211,7 @@ fun LoginScreen(
             SocialButton(
                 text = "Google",
                 icon = R.drawable.google_icon,
-                onClick = { }
+                onClick = { onGoogleClick() }
             )
         }
 
@@ -222,7 +226,11 @@ fun LoginScreen(
                 text = "Sign Up",
                 color = labelColor,
                 style = MaterialTheme.typography.bodyMedium,
-                modifier = Modifier.clickable { }
+                modifier = Modifier.clickable {
+                    navController.navigate("signup"){
+                        popUpTo("login"){inclusive = true}
+                    }
+                }
             )
         }
 
@@ -230,12 +238,15 @@ fun LoginScreen(
 
     }
 
+    Log.d("NAV", navController.currentDestination?.route ?: "null")
+
 }
 
 @Preview(showBackground = true, showSystemUi = true)
 @Composable
 fun LoginScreenPreview() {
     LoginScreen({},
+        onGoogleClick = {},
         navController = rememberNavController()
     )
 }
