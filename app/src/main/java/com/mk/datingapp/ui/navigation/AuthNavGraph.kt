@@ -12,6 +12,7 @@ import com.google.android.gms.auth.api.signin.GoogleSignIn
 import com.google.android.gms.auth.api.signin.GoogleSignInOptions
 import com.mk.datingapp.ui.auth.component.rememberGoogleSignInLauncher
 import com.mk.datingapp.ui.auth.screen.LoginScreen
+import com.mk.datingapp.ui.auth.screen.OtpScreen
 import com.mk.datingapp.ui.auth.screen.RegisterScreen
 import com.mk.datingapp.ui.auth.screen.WelScreen
 
@@ -33,7 +34,9 @@ fun NavGraphBuilder.authNavGraph(navController: NavController) {
 
     composable("signup") {
         RegisterScreen(
-            onRegisterClick = {},
+            onRegisterClick = {
+                navController.navigate("verify")
+            },
             navController
         )
     }
@@ -55,6 +58,10 @@ fun NavGraphBuilder.authNavGraph(navController: NavController) {
             },
             navController
         )
+    }
+
+    composable("verify"){
+        OtpScreen(navController)
     }
 
 }
