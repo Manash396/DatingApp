@@ -29,6 +29,7 @@ import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.runtime.getValue
 import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.remember
+import androidx.compose.runtime.saveable.rememberSaveable
 import androidx.compose.runtime.setValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
@@ -48,6 +49,7 @@ import com.mk.datingapp.ui.auth.component.AppTextField
 import com.mk.datingapp.ui.auth.component.GradientButton
 import com.mk.datingapp.ui.theme.headerTextBgColor
 import com.mk.datingapp.ui.theme.labelColor
+import kotlinx.coroutines.delay
 
 @Composable
 fun RegisterScreen(
@@ -60,203 +62,267 @@ fun RegisterScreen(
     var password by remember { mutableStateOf("") }
     var isChecked by remember { mutableStateOf(false) }
 
-    Column(
+    var isLoading by rememberSaveable { mutableStateOf(false) }
+    var isSuccess by rememberSaveable { mutableStateOf(false) }
+    var triggerRegister by rememberSaveable { mutableStateOf(false) }
+
+    var usernameError by remember { mutableStateOf(false) }
+    var emailError by remember { mutableStateOf(false) }
+    var passwordError by remember { mutableStateOf(false) }
+    var confirmPasswordError by remember { mutableStateOf(false) }
+
+    LaunchedEffect(triggerRegister) {
+        if (triggerRegister){
+            isLoading = true
+            delay(3000)
+            isLoading = false
+            isSuccess = true
+            triggerRegister = false
+        }
+    }
+
+    LaunchedEffect(isSuccess) {
+        if (isSuccess) {
+            onRegisterClick()
+            isSuccess = false
+        }
+    }
+
+
+    Box(
         modifier = Modifier
             .fillMaxSize()
             .background(Color.Black)
-            .padding()
-            .safeContentPadding()
-            .verticalScroll(rememberScrollState())
-            .imePadding(),
     ) {
 
-        Row(
+        Column(
             modifier = Modifier
-                .fillMaxWidth(),
-            verticalAlignment = Alignment.CenterVertically
+                .fillMaxSize()
+                .background(Color.Black)
+                .padding()
+                .safeContentPadding()
+                .verticalScroll(rememberScrollState())
+                .imePadding(),
         ) {
 
-            IconButton(
-                onClick = {
-                    navController.popBackStack()
-                }
+            Row(
+                modifier = Modifier
+                    .fillMaxWidth(),
+                verticalAlignment = Alignment.CenterVertically
             ) {
-                Image(
-                    imageVector = Icons.Default.ArrowBackIosNew,
-                    contentScale = ContentScale.Inside,
-                    contentDescription = "back",
-                    colorFilter = ColorFilter.tint(labelColor),
-                    modifier = Modifier.size(24.dp)
+
+                IconButton(
+                    onClick = {
+                        navController.popBackStack()
+                    }
+                ) {
+                    Image(
+                        imageVector = Icons.Default.ArrowBackIosNew,
+                        contentScale = ContentScale.Inside,
+                        contentDescription = "back",
+                        colorFilter = ColorFilter.tint(labelColor),
+                        modifier = Modifier.size(24.dp)
+                    )
+                }
+
+                Spacer(modifier = Modifier.width(8.dp))
+
+                Text(
+                    text = "Create Account",
+                    fontWeight = FontWeight.Medium,
+                    fontSize = 16.sp,
+                    color = labelColor,
+                    textAlign = TextAlign.Center,
+                    modifier = Modifier
+                        .weight(1f)
+                        .fillMaxWidth()
+                        .padding(end = 60.dp)
+                )
+
+            }
+
+            // now the title of the registration
+
+            Spacer(modifier = Modifier.height(20.dp))
+
+            Row(
+                modifier = Modifier
+                    .fillMaxWidth()
+                    .padding(start = 16.dp, end = 16.dp),
+                verticalAlignment = Alignment.CenterVertically
+            ) {
+
+                Text(
+                    text = "Join the",
+                    fontWeight = FontWeight.Medium,
+                    fontSize = 26.sp,
+                    color = Color.White
+                )
+
+                Text(
+                    text = " Ethereal",
+                    fontWeight = FontWeight.Medium,
+                    fontSize = 26.sp,
+                    color = labelColor,
+                    fontStyle = FontStyle.Italic
+                )
+
+            }
+            Spacer(modifier = Modifier.height(15.dp))
+
+            Text(
+                text = "Step into a world of intentional connections and refined digital elegance",
+                fontWeight = FontWeight.Normal,
+                fontSize = 17.sp,
+                color = Color.White,
+                modifier = Modifier.padding(start = 16.dp, end = 16.dp)
+            )
+
+            Spacer(modifier = Modifier.height(30.dp))
+
+            Text(
+                "UserName", style = MaterialTheme.typography.labelMedium,
+                color = labelColor,
+                modifier = Modifier
+                    .fillMaxWidth()
+                    .padding(start = 16.dp, end = 16.dp)
+            )
+
+            Spacer(modifier = Modifier.height(10.dp))
+
+            AppTextField(
+                value = username,
+                onValueChange = { username = it },
+                placeholder = "Phillips Lackner",
+                modifier = Modifier
+                    .fillMaxWidth()
+                    .padding(start = 16.dp, end = 16.dp),
+                isError = usernameError
+            )
+
+
+
+            Text(
+                "Email Address", style = MaterialTheme.typography.labelMedium,
+                color = labelColor,
+                modifier = Modifier
+                    .fillMaxWidth()
+                    .padding(start = 16.dp, end = 16.dp)
+            )
+
+            Spacer(modifier = Modifier.height(10.dp))
+
+            AppTextField(
+                value = email,
+                onValueChange = { email = it },
+                placeholder = "name@aura.com",
+                modifier = Modifier
+                    .fillMaxWidth()
+                    .padding(start = 16.dp, end = 16.dp),
+                isError = emailError,
+            )
+
+
+            Text(
+                "Password",
+                style = MaterialTheme.typography.labelMedium,
+                color = labelColor,
+                modifier = Modifier.padding(start = 16.dp, end = 16.dp)
+            )
+
+            Spacer(modifier = Modifier.height(10.dp))
+
+            AppPasswordField(
+                value = password,
+                onValueChange = { password = it },
+                modifier = Modifier
+                    .fillMaxWidth()
+                    .padding(start = 16.dp, end = 16.dp)
+            )
+
+            Spacer(modifier = Modifier.height(20.dp))
+
+            Text(
+                "Confirm Password",
+                style = MaterialTheme.typography.labelMedium,
+                color = labelColor,
+                modifier = Modifier.padding(start = 16.dp, end = 16.dp)
+            )
+
+            Spacer(modifier = Modifier.height(10.dp))
+
+            AppPasswordField(
+                value = password,
+                onValueChange = { password = it },
+                modifier = Modifier
+                    .fillMaxWidth()
+                    .padding(start = 16.dp, end = 16.dp)
+            )
+
+            Spacer(modifier = Modifier.height(20.dp))
+
+            Row(
+                verticalAlignment = Alignment.CenterVertically,
+                modifier = Modifier
+                    .fillMaxWidth()
+                    .padding(start = 16.dp, end = 16.dp)
+            ) {
+                androidx.compose.material3.Checkbox(
+                    checked = isChecked,
+                    onCheckedChange = { isChecked = it }, colors = CheckboxDefaults.colors(
+                        checkmarkColor = Color.White,
+                        checkedColor = labelColor
+                    )
+                )
+
+                Spacer(modifier = Modifier.width(8.dp))
+
+                Text(
+                    text = "By continuing, you agree to Aura Amity’s Terms of Service and Privacy Policy.",
+                    fontSize = 12.sp,
+                    color = Color.White.copy(alpha = 0.7f)
                 )
             }
 
-            Spacer(modifier = Modifier.width(8.dp))
+            Spacer(modifier = Modifier.height(10.dp))
 
-            Text(
-                text = "Create Account",
-                fontWeight = FontWeight.Medium,
-                fontSize = 16.sp,
-                color = labelColor,
-                textAlign = TextAlign.Center,
+            Box(
                 modifier = Modifier
-                    .weight(1f)
                     .fillMaxWidth()
-                    .padding(end = 60.dp)
-            )
+                    .padding(start = 16.dp, end = 16.dp, bottom = 16.dp)
 
-        }
+            ) {
+                GradientButton(
+                    text = "Sign Up",
+                    onClick = {
 
-        // now the title of the registration
+                        usernameError = username.isBlank()
+                        emailError = email.isBlank()
+                        passwordError = password.isBlank()
 
-        Spacer(modifier = Modifier.height(20.dp))
+                        val hasError = usernameError || emailError || passwordError
 
-        Row(
-            modifier = Modifier
-                .fillMaxWidth()
-                .padding(start = 16.dp, end = 16.dp)
-            ,
-            verticalAlignment = Alignment.CenterVertically
-        ) {
-
-            Text(
-                text = "Join the",
-                fontWeight = FontWeight.Medium,
-                fontSize = 26.sp,
-                color = Color.White
-            )
-
-            Text(
-                text = " Ethereal",
-                fontWeight = FontWeight.Medium,
-                fontSize = 26.sp,
-                color = labelColor,
-                fontStyle = FontStyle.Italic
-            )
-
-        }
-        Spacer(modifier = Modifier.height(15.dp))
-
-        Text(
-            text = "Step into a world of intentional connections and refined digital elegance",
-            fontWeight = FontWeight.Normal,
-            fontSize = 17.sp,
-            color = Color.White,
-            modifier = Modifier.padding(start = 16.dp, end = 16.dp)
-        )
-
-        Spacer(modifier = Modifier.height(30.dp))
-
-        Text(
-            "UserName", style = MaterialTheme.typography.labelMedium,
-            color = labelColor,
-            modifier = Modifier
-                .fillMaxWidth()
-                .padding(start = 16.dp, end = 16.dp)
-        )
-
-        Spacer(modifier = Modifier.height(10.dp))
-
-        AppTextField(
-            value = username,
-            onValueChange = { username = it },
-            placeholder = "Phillips Lackner",
-            modifier = Modifier
-                .fillMaxWidth()
-                .padding(start = 16.dp, end = 16.dp)
-        )
-
-        Spacer(modifier = Modifier.height(20.dp))
-
-        Text(
-            "Email Address", style = MaterialTheme.typography.labelMedium,
-            color = labelColor,
-            modifier = Modifier
-                .fillMaxWidth()
-                .padding(start = 16.dp, end = 16.dp)
-        )
-
-        Spacer(modifier = Modifier.height(10.dp))
-
-        AppTextField(
-            value = email,
-            onValueChange = { email = it },
-            placeholder = "name@aura.com",
-            modifier = Modifier
-                .fillMaxWidth()
-                .padding(start = 16.dp, end = 16.dp)
-        )
-
-        Spacer(modifier = Modifier.height(20.dp))
-
-        Text("Password", style = MaterialTheme.typography.labelMedium, color = labelColor
-           , modifier = Modifier.padding(start = 16.dp, end = 16.dp)
-        )
-
-        Spacer(modifier = Modifier.height(10.dp))
-
-        AppPasswordField(
-            value = password,
-            onValueChange = { password = it },
-            modifier = Modifier
-                .fillMaxWidth()
-                .padding(start = 16.dp, end = 16.dp)
-        )
-
-        Spacer(modifier = Modifier.height(20.dp))
-
-        Text("Confirm Password", style = MaterialTheme.typography.labelMedium, color = labelColor
-        , modifier = Modifier.padding(start = 16.dp, end = 16.dp)
-        )
-
-        Spacer(modifier = Modifier.height(10.dp))
-
-        AppPasswordField(
-            value = password,
-            onValueChange = { password = it },
-            modifier = Modifier
-                .fillMaxWidth()
-                .padding(start = 16.dp, end = 16.dp)
-        )
-
-        Spacer(modifier = Modifier.height(20.dp))
-
-        Row(
-            verticalAlignment = Alignment.CenterVertically,
-            modifier = Modifier.fillMaxWidth()
-                .padding(start = 16.dp, end = 16.dp)
-        ) {
-            androidx.compose.material3.Checkbox(
-                checked = isChecked,
-                onCheckedChange = { isChecked = it }
-                , colors = CheckboxDefaults.colors(
-                    checkmarkColor = Color.White,
-                    checkedColor = labelColor
+                       if(!hasError) triggerRegister = true
+                    }
                 )
-            )
+            }
 
-            Spacer(modifier = Modifier.width(8.dp))
 
-            Text(
-                text = "By continuing, you agree to Aura Amity’s Terms of Service and Privacy Policy.",
-                fontSize = 12.sp,
-                color = Color.White.copy(alpha = 0.7f)
-            )
         }
 
-        Spacer(modifier = Modifier.height(10.dp))
-
-        Box(
-            modifier = Modifier
-                .fillMaxWidth()
-                .padding(start = 16.dp, end = 16.dp, bottom = 16.dp)
-
-        ){
-            GradientButton(
-                text = "Sign Up",
-                onClick = onRegisterClick
-            )
+        // loader
+        if (isLoading) {
+            Box(
+                modifier = Modifier
+                    .fillMaxSize()
+                    .background(Color.Black.copy(alpha = 0.5f)),
+                contentAlignment = Alignment.Center
+            ) {
+                androidx.compose.material3.CircularProgressIndicator(
+                    color = labelColor
+                )
+            }
         }
-
 
     }
 

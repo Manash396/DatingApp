@@ -8,6 +8,7 @@ import androidx.navigation.compose.composable
 import androidx.navigation.compose.navigation
 import androidx.navigation.compose.rememberNavController
 import com.mk.datingapp.ui.auth.screen.AnimScreen
+import com.mk.datingapp.ui.profile.screen.ProfileCreationScreen
 
 
 @Composable
@@ -42,6 +43,13 @@ fun RootNavHost(isLoggedIn: Boolean) {
             mainNavGraph(navController)
         }
 
+        composable("profileCre") {
+            ProfileCreationScreen(){
+                navController.navigate("main"){
+                    popUpTo("profileCre"){ inclusive =  true}
+                }
+            }
+        }
 
     }
 }

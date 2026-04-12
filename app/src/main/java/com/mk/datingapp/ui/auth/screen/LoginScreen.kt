@@ -61,6 +61,8 @@ fun LoginScreen(
 ) {
 
 
+    var emailError by remember { mutableStateOf(false) }
+    var passwordError by remember { mutableStateOf(false) }
 
     val composition by rememberLottieComposition(
         LottieCompositionSpec.RawRes(R.raw.logo_anim)
@@ -149,7 +151,8 @@ fun LoginScreen(
             placeholder = "name@aura.com",
             modifier = Modifier
                 .fillMaxWidth()
-                .padding(start = 16.dp, end = 16.dp)
+                .padding(start = 16.dp, end = 16.dp),
+            isError = emailError
         )
 
         Spacer(modifier = Modifier.height(20.dp))

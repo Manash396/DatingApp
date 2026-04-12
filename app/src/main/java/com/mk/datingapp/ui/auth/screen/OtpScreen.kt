@@ -1,5 +1,10 @@
 package com.mk.datingapp.ui.auth.screen
 
+import androidx.compose.animation.AnimatedVisibility
+import androidx.compose.animation.fadeIn
+import androidx.compose.animation.fadeOut
+import androidx.compose.animation.slideInVertically
+import androidx.compose.animation.slideOutVertically
 import androidx.compose.foundation.Image
 import androidx.compose.foundation.background
 import androidx.compose.foundation.clickable
@@ -31,6 +36,7 @@ import androidx.compose.runtime.getValue
 import androidx.compose.runtime.mutableIntStateOf
 import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.remember
+import androidx.compose.runtime.saveable.rememberSaveable
 import androidx.compose.runtime.setValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
@@ -39,12 +45,14 @@ import androidx.compose.ui.focus.focusRequester
 import androidx.compose.ui.graphics.Brush
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.graphics.ColorFilter
+import androidx.compose.ui.hapticfeedback.HapticFeedbackType
 import androidx.compose.ui.input.key.Key
 import androidx.compose.ui.input.key.KeyEventType
 import androidx.compose.ui.input.key.key
 import androidx.compose.ui.input.key.onKeyEvent
 import androidx.compose.ui.input.key.type
 import androidx.compose.ui.layout.ContentScale
+import androidx.compose.ui.platform.LocalHapticFeedback
 import androidx.compose.ui.text.font.FontStyle
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.text.input.KeyboardType
@@ -63,7 +71,8 @@ import java.util.Locale
 
 @Composable
 fun OtpScreen(
-    navController : NavController
+    onVerified: () -> Unit,
+    navController: NavController
 ) {
 
     var otpValues = remember { List(6) { mutableStateOf("") } }
@@ -74,6 +83,41 @@ fun OtpScreen(
 
     val focusRequester =  List(6) { FocusRequester() }
     var backTrigger  by remember { mutableIntStateOf(2) }
+
+    var isLoading by rememberSaveable { mutableStateOf(false) }
+    var isSuccess by rememberSaveable { mutableStateOf(false) }
+    var triggerVerifi by rememberSaveable { mutableStateOf(false) }
+    var showError by rememberSaveable { mutableStateOf(false) }
+    var errorText by rememberSaveable{ mutableStateOf("Fill in all the boxes")}
+
+    val haptic = LocalHapticFeedback.current
+
+
+    LaunchedEffect(triggerVerifi) {
+        if (triggerVerifi){
+            isLoading = true
+            delay(3000)
+            isLoading = false
+            isSuccess = true
+            triggerVerifi = false
+        }
+    }
+
+    LaunchedEffect(showError) {
+        if(showError){
+            haptic.performHapticFeedback(HapticFeedbackType.LongPress)
+            delay(2000)
+            showError = false
+        }
+    }
+
+
+    LaunchedEffect(isSuccess) {
+        if (isSuccess) {
+            onVerified()
+            isSuccess = false
+        }
+    }
 
     LaunchedEffect(key1 = timeLeft) {
         if (timeLeft>0){
@@ -200,11 +244,11 @@ fun OtpScreen(
                                 .size(width = 47.dp, height = 56.dp)
                                 .focusRequester(focusRequester[index])
                                 .onKeyEvent { event ->
-                                    if (event.key == Key.Backspace && event.type == KeyEventType.KeyUp && index > 0 ) {
+                                    if (event.key == Key.Backspace && event.type == KeyEventType.KeyUp && index > 0) {
                                         if (backTrigger == 0) {
                                             focusRequester[index - 1].requestFocus()
                                             backTrigger = 2
-                                        }else{
+                                        } else {
                                             backTrigger--
                                         }
                                     }
@@ -224,7 +268,26 @@ fun OtpScreen(
                     }
                 }
 
-                Spacer(modifier = Modifier.height(40.dp))
+                Column (
+                    modifier = Modifier
+                        .fillMaxWidth()
+                        .height(30.dp),
+                    horizontalAlignment = Alignment.CenterHorizontally
+                ) {
+                    AnimatedVisibility(
+                        visible = showError,
+                        enter = fadeIn() + slideInVertically(initialOffsetY = { -20 }),
+                        exit = fadeOut() + slideOutVertically(targetOffsetY = { -20 })
+                    ) {
+                        Text(
+                            text = "Fill in all the boxes",
+                            color = Color.Red,
+                            fontSize = 12.sp,
+                        )
+                    }
+                }
+
+                Spacer(modifier = Modifier.height(30.dp))
 
                 // 🔹 Timer
                 Text(
@@ -256,6 +319,14 @@ fun OtpScreen(
             ) {
 
                 GradientButton("Verify") {
+                    val otpValues  = otpValues.joinToString(""){ it.value }
+
+                    if(otpValues.length <6){
+                        showError = true
+                    }else{
+                        showError = false
+                        triggerVerifi = true
+                    }
 
                 }
 
@@ -282,6 +353,26 @@ fun OtpScreen(
                 }
 
             }
+
+        }
+        if (isLoading) {
+            Box(
+                modifier = Modifier
+                    .fillMaxSize()
+                    .background(
+                    Brush.verticalGradient(
+                        colors = listOf(
+                            Color(0xFF0F0F1A).copy(alpha = 0.5f),
+                            Color(0xFF1A0B2E).copy(alpha = 0.5f)
+                        )
+                    )
+                ),
+                contentAlignment = Alignment.Center
+            ) {
+                androidx.compose.material3.CircularProgressIndicator(
+                    color = labelColor
+                )
+            }
         }
     }
 
@@ -291,7 +382,7 @@ fun OtpScreen(
 @Preview(showSystemUi = true, showBackground = true)
 @Composable
 fun OtpScreenPreview() {
-    OtpScreen(
+    OtpScreen({} ,
         navController = rememberNavController()
     )
 }

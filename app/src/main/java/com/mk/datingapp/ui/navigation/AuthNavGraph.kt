@@ -35,6 +35,7 @@ fun NavGraphBuilder.authNavGraph(navController: NavController) {
     composable("signup") {
         RegisterScreen(
             onRegisterClick = {
+
                 navController.navigate("verify")
             },
             navController
@@ -61,7 +62,11 @@ fun NavGraphBuilder.authNavGraph(navController: NavController) {
     }
 
     composable("verify"){
-        OtpScreen(navController)
+        OtpScreen({
+            navController.navigate("profileCre"){
+                popUpTo("auth"){inclusive = true}
+            }
+        }, navController = navController )
     }
 
 }
