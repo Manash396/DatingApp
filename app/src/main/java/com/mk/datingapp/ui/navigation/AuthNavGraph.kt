@@ -27,6 +27,9 @@ fun NavGraphBuilder.authNavGraph(navController: NavController) {
         }
 
         LoginScreen({
+            navController.navigate("main"){
+                popUpTo("auth") {  inclusive = true }
+            }
         }, onGoogleClick = {
             launcher.launch(client.signInIntent)
         }, navController)

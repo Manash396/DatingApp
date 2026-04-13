@@ -39,6 +39,7 @@ import com.mk.datingapp.ui.theme.headerTextBgColor
 import com.mk.datingapp.ui.theme.headerTextColor
 import com.mk.datingapp.ui.theme.labelColor
 import androidx.compose.runtime.getValue
+import androidx.compose.runtime.saveable.rememberSaveable
 import androidx.compose.runtime.setValue
 import androidx.navigation.NavController
 import com.airbnb.lottie.Lottie
@@ -52,6 +53,7 @@ import com.mk.datingapp.ui.auth.component.AppPasswordField
 import com.mk.datingapp.ui.auth.component.AppTextField
 import com.mk.datingapp.ui.auth.component.GradientButton
 import com.mk.datingapp.ui.auth.component.SocialButton
+import kotlinx.coroutines.delay
 
 @Composable
 fun LoginScreen(
@@ -72,6 +74,34 @@ fun LoginScreen(
     var email by remember { mutableStateOf("") }
     var password by remember { mutableStateOf("") }
 
+    var isLoading by rememberSaveable { mutableStateOf(false) }
+    var isSuccess by rememberSaveable { mutableStateOf(false) }
+    var triggerLogin by rememberSaveable { mutableStateOf(false) }
+
+    LaunchedEffect(triggerLogin) {
+        if(triggerLogin){
+            isLoading = true
+            delay(2000)
+            isLoading = false
+            isSuccess = true
+            triggerLogin = false
+        }
+    }
+
+
+    LaunchedEffect(isSuccess) {
+        if (isSuccess) {
+            onLoginClick()
+            isSuccess = false
+        }
+    }
+
+
+    Box(
+        modifier = Modifier
+            .fillMaxSize()
+            .background(Color.Black)
+    ) {
 
     Column(
         modifier = Modifier
@@ -147,15 +177,15 @@ fun LoginScreen(
 
         AppTextField(
             value = email,
-            onValueChange = { email = it },
+            onValueChange = { email = it.trim() },
             placeholder = "name@aura.com",
             modifier = Modifier
                 .fillMaxWidth()
                 .padding(start = 16.dp, end = 16.dp),
-            isError = emailError
+            isError = emailError,
+            resetErrorMessage = { emailError = false }
         )
 
-        Spacer(modifier = Modifier.height(20.dp))
 
         Row(
             horizontalArrangement = Arrangement.SpaceBetween,
@@ -168,29 +198,37 @@ fun LoginScreen(
                 text = "Forgot Password?",
                 color = labelColor,
                 style = MaterialTheme.typography.labelMedium,
-                )
+            )
         }
 
         Spacer(modifier = Modifier.height(10.dp))
 
         AppPasswordField(
             value = password,
-            onValueChange = { password = it },
+            onValueChange = { password = it.trim() },
             modifier = Modifier
                 .fillMaxWidth()
-                .padding(start = 16.dp, end = 16.dp)
+                .padding(start = 16.dp, end = 16.dp),
+            isError = passwordError,
+            resetErrorMessage = { passwordError = false }
         )
 
-        Spacer(modifier = Modifier.height(30.dp))
+        Spacer(modifier = Modifier.height(20.dp))
 
         Box(
             modifier = Modifier
                 .fillMaxWidth()
                 .padding(start = 16.dp, end = 16.dp)
-        ){
+        ) {
             GradientButton(
                 text = "Login",
-                onClick = onLoginClick
+                onClick = {
+                    emailError = email.isBlank()
+                    passwordError = password.isBlank()
+
+                    val hasError = emailError || passwordError
+                    if (!hasError) triggerLogin = true
+                }
             )
         }
 
@@ -224,20 +262,37 @@ fun LoginScreen(
         Row(
             modifier = Modifier.align(Alignment.CenterHorizontally)
         ) {
-            Text(text = "Don't have an account? ", color =  labelColor,style = MaterialTheme.typography.bodyMedium)
+            Text(
+                text = "Don't have an account? ",
+                color = labelColor,
+                style = MaterialTheme.typography.bodyMedium
+            )
             Text(
                 text = "Sign Up",
                 color = labelColor,
                 style = MaterialTheme.typography.bodyMedium,
                 modifier = Modifier.clickable {
-                    navController.navigate("signup"){
-                        popUpTo("login"){inclusive = true}
+                    navController.navigate("signup") {
+                        popUpTo("login") { inclusive = true }
                     }
                 }
             )
         }
+    }
 
-
+// loader
+        if (isLoading) {
+            Box(
+                modifier = Modifier
+                    .fillMaxSize()
+                    .background(Color.Black.copy(alpha = 0.5f)),
+                contentAlignment = Alignment.Center
+            ) {
+                androidx.compose.material3.CircularProgressIndicator(
+                    color = labelColor
+                )
+            }
+        }
 
     }
 

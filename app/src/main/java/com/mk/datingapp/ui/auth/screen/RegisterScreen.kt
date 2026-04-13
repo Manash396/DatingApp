@@ -60,6 +60,7 @@ fun RegisterScreen(
     var username by remember { mutableStateOf("") }
     var email by remember { mutableStateOf("") }
     var password by remember { mutableStateOf("") }
+    var passwordConfirm by remember { mutableStateOf("") }
     var isChecked by remember { mutableStateOf(false) }
 
     var isLoading by rememberSaveable { mutableStateOf(false) }
@@ -70,6 +71,8 @@ fun RegisterScreen(
     var emailError by remember { mutableStateOf(false) }
     var passwordError by remember { mutableStateOf(false) }
     var confirmPasswordError by remember { mutableStateOf(false) }
+
+    var confirmPasswordErrorText by remember { mutableStateOf("") }
 
     LaunchedEffect(triggerRegister) {
         if (triggerRegister){
@@ -192,12 +195,13 @@ fun RegisterScreen(
 
             AppTextField(
                 value = username,
-                onValueChange = { username = it },
+                onValueChange = { username = it.trim() },
                 placeholder = "Phillips Lackner",
                 modifier = Modifier
                     .fillMaxWidth()
                     .padding(start = 16.dp, end = 16.dp),
-                isError = usernameError
+                isError = usernameError ,
+                resetErrorMessage={ usernameError = false }
             )
 
 
@@ -214,12 +218,13 @@ fun RegisterScreen(
 
             AppTextField(
                 value = email,
-                onValueChange = { email = it },
+                onValueChange = { email = it.trim() },
                 placeholder = "name@aura.com",
                 modifier = Modifier
                     .fillMaxWidth()
                     .padding(start = 16.dp, end = 16.dp),
                 isError = emailError,
+                resetErrorMessage = { emailError =  false}
             )
 
 
@@ -234,13 +239,15 @@ fun RegisterScreen(
 
             AppPasswordField(
                 value = password,
-                onValueChange = { password = it },
+                onValueChange = { password = it.trim() },
                 modifier = Modifier
                     .fillMaxWidth()
-                    .padding(start = 16.dp, end = 16.dp)
+                    .padding(start = 16.dp, end = 16.dp),
+                isError = passwordError,
+                resetErrorMessage = {passwordError = false}
             )
 
-            Spacer(modifier = Modifier.height(20.dp))
+//            Spacer(modifier = Modifier.height(20.dp))
 
             Text(
                 "Confirm Password",
@@ -252,14 +259,20 @@ fun RegisterScreen(
             Spacer(modifier = Modifier.height(10.dp))
 
             AppPasswordField(
-                value = password,
-                onValueChange = { password = it },
+                value = passwordConfirm ,
+                onValueChange = { passwordConfirm  = it.trim() },
                 modifier = Modifier
                     .fillMaxWidth()
-                    .padding(start = 16.dp, end = 16.dp)
+                    .padding(start = 16.dp, end = 16.dp),
+                isError = confirmPasswordError || !confirmPasswordErrorText.isBlank(),
+                errorText = confirmPasswordErrorText,
+                resetErrorMessage = {
+                    confirmPasswordError = false
+                    confirmPasswordErrorText = ""
+                }
             )
 
-            Spacer(modifier = Modifier.height(20.dp))
+//            Spacer(modifier = Modifier.height(20.dp))
 
             Row(
                 verticalAlignment = Alignment.CenterVertically,
@@ -299,8 +312,13 @@ fun RegisterScreen(
                         usernameError = username.isBlank()
                         emailError = email.isBlank()
                         passwordError = password.isBlank()
+                        confirmPasswordError = passwordConfirm.isBlank()
 
-                        val hasError = usernameError || emailError || passwordError
+                        val hasError = usernameError || emailError || passwordError || confirmPasswordError
+                        if (password != passwordConfirm){
+                            confirmPasswordErrorText = "Password did not matched"
+                            return@GradientButton
+                        }
 
                        if(!hasError) triggerRegister = true
                     }

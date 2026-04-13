@@ -37,7 +37,9 @@ fun AppTextField(
     placeholder: String,
     modifier: Modifier? = null,
     isError : Boolean ,
-    errorText : String = ""
+    errorText : String = "",
+    resetErrorMessage: () -> Unit,
+    enabled : Boolean  =  true
 ) {
 
     var errorShow by rememberSaveable { mutableStateOf(false) }
@@ -48,6 +50,7 @@ fun AppTextField(
 
             delay(3000)
             errorShow = false
+            resetErrorMessage()
         }
     }
 
@@ -70,6 +73,8 @@ fun AppTextField(
                 focusedTextColor = labelColor,
                 unfocusedTextColor = placeholderColor,
             ),
+            enabled = enabled
+
         )
 
             Column (
