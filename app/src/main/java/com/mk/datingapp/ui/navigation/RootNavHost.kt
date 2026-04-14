@@ -18,7 +18,7 @@ fun RootNavHost(isLoggedIn: Boolean) {
 
     NavHost(
         navController = navController,
-        startDestination = "splash"
+        startDestination = "profileCre"
     ) {
 
         composable("splash") {
