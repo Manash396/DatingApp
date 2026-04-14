@@ -24,7 +24,7 @@ object Util {
             null
         ).addOnSuccessListener { location ->
 
-            Log.d("KRISHNA", location.toString())
+//            Log.d("KRISHNA", location.toString())
 
             if (location != null) {
 
@@ -50,7 +50,7 @@ object Util {
 
 
         if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.TIRAMISU){
-            Log.d("KRISHNA", "I entered tiramisu ")
+//            Log.d("KRISHNA", "I entered tiramisu ")
 
             geoCoder.getFromLocation(
                 lat , lon, 1
