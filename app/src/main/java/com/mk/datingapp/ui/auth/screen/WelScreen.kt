@@ -23,6 +23,7 @@ import androidx.compose.material3.Icon
 import androidx.compose.material3.OutlinedButton
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
+import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Brush
@@ -34,21 +35,28 @@ import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
+import androidx.hilt.navigation.compose.hiltViewModel
 import androidx.navigation.NavController
 import androidx.navigation.compose.rememberNavController
 import com.mk.datingapp.R
 import com.mk.datingapp.ui.auth.component.GradientButton
 import com.mk.datingapp.ui.auth.component.OutlineButton
 import com.mk.datingapp.ui.auth.component.SocialButton
+import com.mk.datingapp.ui.auth.viewmodel.WelScreenViewModel
+import dagger.hilt.android.lifecycle.HiltViewModel
 
 @Composable
 fun WelScreen(
     onGetStarted: () -> Unit,
     onGoogleClick: () -> Unit,
     onEmailClick: () -> Unit,
-    navController: NavController
+    navController: NavController,
+    viewModel: WelScreenViewModel = hiltViewModel()
 ){
 
+    LaunchedEffect(Unit) {
+        viewModel.trackScreenOnce()
+    }
 
     Box(modifier = Modifier.fillMaxSize()) {
 
@@ -100,6 +108,7 @@ fun WelScreen(
                     color = Color.Black,
                     fontSize = 17.sp,
                     modifier = Modifier.clickable {
+                        viewModel.trackButtonClick("LoginButtonClicked")
                         navController.navigate("login")
                         {
                             // keeping the wel screen (start destination of a nested graph)
@@ -140,18 +149,27 @@ fun WelScreen(
 
                 GradientButton(
                     text = "Get Started",
-                    onClick = onGetStarted
+                    onClick = {
+                        viewModel.trackButtonClick("GetStartedButtonClicked")
+                        onGetStarted()
+                    }
                 )
 
                 SocialButton(
                     text = "Continue with Google",
                     icon = R.drawable.google_icon,
-                    onClick = onGoogleClick
+                    onClick = {
+                        viewModel.trackButtonClick("GoogleButtonClicked")
+                        onGoogleClick()
+                    }
                 )
 
                 OutlineButton(
                     text = "Sign up with Email",
-                    onClick = onEmailClick
+                    onClick = {
+                        viewModel.trackButtonClick("SignedUpButtonClicked")
+                        onEmailClick()
+                    }
                 )
 
                 Text(

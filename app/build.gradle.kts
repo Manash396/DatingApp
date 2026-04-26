@@ -1,3 +1,4 @@
+import com.android.build.api.dsl.ApplicationExtension
 
 
 plugins {
@@ -5,9 +6,13 @@ plugins {
     alias(libs.plugins.kotlin.android)
     alias(libs.plugins.kotlin.compose)
     alias(libs.plugins.google.gms.google.services)
+
+    alias(libs.plugins.ksp)
+    alias(libs.plugins.hilt.android)
 }
 
-android {
+extensions.configure<ApplicationExtension> {
+
     namespace = "com.mk.datingapp"
     compileSdk {
         version = release(36)
@@ -36,13 +41,17 @@ android {
         sourceCompatibility = JavaVersion.VERSION_11
         targetCompatibility = JavaVersion.VERSION_11
     }
-    kotlin {
-        compilerOptions{
-            jvmToolchain(11)
-        }
-    }
+
     buildFeatures {
         compose = true
+    }
+}
+
+kotlin {
+    jvmToolchain(11)
+
+    compilerOptions {
+        // optional configs
     }
 }
 
@@ -73,6 +82,8 @@ dependencies {
     implementation(libs.androidx.compose.ui.tooling.preview)
     implementation(libs.androidx.compose.material3)
     implementation(libs.androidx.compose.runtime)
+    implementation(libs.firebase.analytics)
+    implementation(libs.firebase.database)
 
     // location services
     implementation(libs.play.services.location)
@@ -88,4 +99,9 @@ dependencies {
     androidTestImplementation(libs.androidx.compose.ui.test.junit4)
     debugImplementation(libs.androidx.compose.ui.tooling)
     debugImplementation(libs.androidx.compose.ui.test.manifest)
+
+    //    hilt
+    implementation(libs.hilt.android)
+    ksp(libs.hilt.compiler)
+    implementation("androidx.hilt:hilt-navigation-compose:1.2.0")
 }

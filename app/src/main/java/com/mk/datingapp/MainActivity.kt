@@ -17,7 +17,9 @@ import androidx.core.splashscreen.SplashScreen.Companion.installSplashScreen
 import com.mk.datingapp.ui.auth.screen.WelScreen
 import com.mk.datingapp.ui.navigation.RootNavHost
 import com.mk.datingapp.ui.theme.DatingAppTheme
+import dagger.hilt.android.AndroidEntryPoint
 
+@AndroidEntryPoint
 class MainActivity : ComponentActivity() {
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
