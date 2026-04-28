@@ -46,6 +46,7 @@ import com.mk.datingapp.ui.auth.component.AppTextField
 import com.mk.datingapp.ui.auth.component.GradientButton
 import com.mk.datingapp.ui.theme.labelColor
 import com.mk.datingapp.ui.theme.placeholderColor
+import com.mk.datingapp.ui.theme.screenBg
 import com.mk.datingapp.ui.theme.textFieldContColor
 import com.mk.datingapp.utils.Util.getUserLocation
 
@@ -57,6 +58,7 @@ fun StepOneScreen() {
 
     // ---------------- STATE ----------------
     var fullName by remember { mutableStateOf("") }
+    var userName by remember { mutableStateOf("") }
     var age by remember { mutableStateOf("") }
     var gender by remember { mutableStateOf("") }
     var presence by remember { mutableStateOf("") }
@@ -69,6 +71,7 @@ fun StepOneScreen() {
 
     // ---------------- ERROR STATE ----------------
     var fullNameError by remember { mutableStateOf(false) }
+    var userNameError by remember { mutableStateOf(false) }
     var ageError by remember { mutableStateOf(false) }
     var presenceError by remember { mutableStateOf(false) }
     var genderError by remember { mutableStateOf(false) }
@@ -140,6 +143,23 @@ fun StepOneScreen() {
                 resetErrorMessage = { fullNameError = false }
             )
 
+
+            Text("USERNAME", color = labelColor, fontSize = 12.sp)
+
+            Spacer(modifier = Modifier.height(10.dp))
+
+            AppTextField(
+                value = userName,
+                onValueChange = {
+                    userName= it
+                    userNameError = false
+                },
+                placeholder = "Enter username",
+                isError = userNameError,
+                errorText = "Name required",
+                resetErrorMessage = { userNameError = false }
+            )
+
 //            Spacer(modifier = Modifier.height(16.dp))
 
             // -------- AGE + GENDER --------
@@ -155,7 +175,7 @@ fun StepOneScreen() {
                             age = it
                             ageError = false
                         },
-                        placeholder = "21",
+                        placeholder = "e.g. 21",
                         isError = ageError,
                         errorText = "Age required",
                         resetErrorMessage = { ageError = false }

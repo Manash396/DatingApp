@@ -42,15 +42,13 @@ import com.mk.datingapp.R
 import com.mk.datingapp.ui.auth.component.GradientButton
 import com.mk.datingapp.ui.auth.component.OutlineButton
 import com.mk.datingapp.ui.auth.component.SocialButton
+import com.mk.datingapp.ui.auth.event.WelScreenEvent
 import com.mk.datingapp.ui.auth.viewmodel.WelScreenViewModel
 import dagger.hilt.android.lifecycle.HiltViewModel
 
 @Composable
 fun WelScreen(
-    onGetStarted: () -> Unit,
-    onGoogleClick: () -> Unit,
-    onEmailClick: () -> Unit,
-    navController: NavController,
+    onEvent : (WelScreenEvent) -> Unit,
     viewModel: WelScreenViewModel = hiltViewModel()
 ){
 
@@ -109,11 +107,7 @@ fun WelScreen(
                     fontSize = 17.sp,
                     modifier = Modifier.clickable {
                         viewModel.trackButtonClick("LoginButtonClicked")
-                        navController.navigate("login")
-                        {
-                            // keeping the wel screen (start destination of a nested graph)
-                            popUpTo("wel") { inclusive = false }
-                        }
+                        onEvent(WelScreenEvent.OnLoginClick)
                     }
                 )
             }
@@ -151,7 +145,7 @@ fun WelScreen(
                     text = "Get Started",
                     onClick = {
                         viewModel.trackButtonClick("GetStartedButtonClicked")
-                        onGetStarted()
+                        onEvent(WelScreenEvent.OnGetStartedClick)
                     }
                 )
 
@@ -160,7 +154,7 @@ fun WelScreen(
                     icon = R.drawable.google_icon,
                     onClick = {
                         viewModel.trackButtonClick("GoogleButtonClicked")
-                        onGoogleClick()
+                        onEvent(WelScreenEvent.OnGoogleClick)
                     }
                 )
 
@@ -168,7 +162,7 @@ fun WelScreen(
                     text = "Sign up with Email",
                     onClick = {
                         viewModel.trackButtonClick("SignedUpButtonClicked")
-                        onEmailClick()
+                        onEvent(WelScreenEvent.OnEmailClick)
                     }
                 )
 
@@ -192,9 +186,6 @@ fun WelScreen(
 @Composable
 fun WelScreenPreview() {
     WelScreen(
-        onGetStarted = {},
-        onGoogleClick = {},
-        onEmailClick = {},
-        navController = rememberNavController()
+        onEvent = {}
     )
 }
