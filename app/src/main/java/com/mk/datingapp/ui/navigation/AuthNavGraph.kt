@@ -21,18 +21,13 @@ fun NavGraphBuilder.authNavGraph(navController: NavController) {
 
 
     composable("login") {
-        val (client, launcher) = rememberGoogleSignInLauncher { email, name ->
-            navController.navigate("main") {
-                popUpTo("auth") { inclusive = true }
-            }
-        }
 
         LoginScreen({
             navController.navigate("main") {
                 popUpTo("auth") { inclusive = true }
             }
         }, onGoogleClick = {
-            launcher.launch(client.signInIntent)
+
         }, navController)
     }
 
@@ -47,11 +42,6 @@ fun NavGraphBuilder.authNavGraph(navController: NavController) {
     }
 
     composable("wel") {
-        val (client, launcher) = rememberGoogleSignInLauncher { email, name ->
-            navController.navigate("profile") {
-                popUpTo("auth") { inclusive = true }
-            }
-        }
 
         WelScreen(
             onEvent = { event ->
@@ -64,14 +54,28 @@ fun NavGraphBuilder.authNavGraph(navController: NavController) {
 
                     }
 
-                    WelScreenEvent.OnGoogleClick -> {
-                        launcher.launch(client.signInIntent)
+                    WelScreenEvent.onGoogleSuccess -> {
+
                     }
+
 
                     WelScreenEvent.OnLoginClick -> {
                         navController.navigate("login")
                         {
                             // keeping the wel screen (start destination of a nested graph)
+                            popUpTo("wel") { inclusive = false }
+                        }
+                    }
+
+                    WelScreenEvent.OnNavigateToMain -> {
+                        navController.navigate("main")
+                        {
+                            popUpTo("wel") { inclusive = false }
+                        }
+                    }
+                    WelScreenEvent.OnNavigateToProfile -> {
+                        navController.navigate("profileCre")
+                        {
                             popUpTo("wel") { inclusive = false }
                         }
                     }

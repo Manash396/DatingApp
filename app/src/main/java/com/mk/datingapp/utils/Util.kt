@@ -5,8 +5,15 @@ import android.content.Context
 import android.location.Geocoder
 import android.os.Build
 import android.util.Log
+import androidx.credentials.CredentialManager
+import androidx.credentials.CustomCredential
+import androidx.credentials.GetCredentialRequest
+import androidx.credentials.PasswordCredential
+import androidx.credentials.PublicKeyCredential
 import com.google.android.gms.location.LocationServices
 import com.google.android.gms.location.Priority
+import com.google.android.libraries.identity.googleid.GetGoogleIdOption
+import com.google.android.libraries.identity.googleid.GoogleIdTokenCredential
 import java.util.Locale
 
 
@@ -102,6 +109,78 @@ object Util {
             }
         }
 
+    }
+
+
+    suspend fun signInWithGoogle(
+        context : Context,
+        onSuccess :  (String? , String?) -> Unit,
+        onError: (String) -> Unit
+    ){
+        try {
+
+            val googleIdOption  = GetGoogleIdOption.Builder()
+                .setServerClientId("YOUR_WEB_CLIENT_ID")
+                .setFilterByAuthorizedAccounts(false)
+                .build()
+
+            val request = GetCredentialRequest.Builder()
+                .addCredentialOption(googleIdOption)
+                .build()
+
+            val credentialManager = CredentialManager.create(context)
+
+            val result  = credentialManager.getCredential(
+                context , request
+            )
+
+            when (val credential = result.credential) {
+
+                is CustomCredential -> {
+                    if (credential.type == GoogleIdTokenCredential.TYPE_GOOGLE_ID_TOKEN_CREDENTIAL) {
+
+                        val googleCredential = GoogleIdTokenCredential.createFrom(credential.data)
+                        val idToken = googleCredential.idToken
+
+                        val email  = googleCredential.id
+                        val name = googleCredential.displayName
+
+                        Log.d("AuthMk", "Google ID Token: $idToken")
+
+                        //  Send to Firebase here
+
+
+
+                        onSuccess(email , name)
+
+                    }
+                }
+
+                is PasswordCredential -> {
+                    val username = credential.id
+                    val password = credential.password
+
+                    Log.d("Auth", "Password login")
+                }
+
+                is PublicKeyCredential -> {
+                    val responseJson = credential.authenticationResponseJson
+
+                    Log.d("Auth", "Passkey login")
+                }
+
+                else -> {
+                    Log.e("Auth", "Unknown credential type")
+                    onError("Invalid credential type")
+                }
+            }
+
+
+
+        }catch (e : Exception){
+            Log.e("GOOGLE", "Error: ${e.message}", e)
+            onError(e.message ?: "Unknown error")
+        }
     }
 
 }

@@ -1,5 +1,6 @@
 package com.mk.datingapp.ui.auth.screen
 
+import android.util.Log
 import androidx.compose.foundation.Image
 import androidx.compose.foundation.background
 import androidx.compose.foundation.clickable
@@ -24,6 +25,10 @@ import androidx.compose.material3.OutlinedButton
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.LaunchedEffect
+import androidx.compose.runtime.getValue
+import androidx.compose.runtime.mutableStateOf
+import androidx.compose.runtime.remember
+import androidx.compose.runtime.setValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Brush
@@ -36,21 +41,52 @@ import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import androidx.hilt.navigation.compose.hiltViewModel
+import androidx.lifecycle.compose.collectAsStateWithLifecycle
 import androidx.navigation.NavController
 import androidx.navigation.compose.rememberNavController
 import com.mk.datingapp.R
 import com.mk.datingapp.ui.auth.component.GradientButton
 import com.mk.datingapp.ui.auth.component.OutlineButton
 import com.mk.datingapp.ui.auth.component.SocialButton
+import com.mk.datingapp.ui.auth.component.rememberGoogleSignInLauncher
 import com.mk.datingapp.ui.auth.event.WelScreenEvent
 import com.mk.datingapp.ui.auth.viewmodel.WelScreenViewModel
+import com.mk.datingapp.ui.theme.labelColor
 import dagger.hilt.android.lifecycle.HiltViewModel
+import kotlinx.coroutines.flow.collectLatest
 
 @Composable
 fun WelScreen(
     onEvent : (WelScreenEvent) -> Unit,
     viewModel: WelScreenViewModel = hiltViewModel()
 ){
+
+    // multiple sigin protection
+    var isSigningIn by remember { mutableStateOf(false) }
+
+    val launchGoogleSignIn = rememberGoogleSignInLauncher { idToken ->
+
+        isSigningIn = false
+
+        if (idToken==null){
+//            showError
+        }else{
+            viewModel.signInWithGoogle(idToken)
+        }
+    }
+
+
+
+    val state  by viewModel.state.collectAsStateWithLifecycle()
+
+    LaunchedEffect(viewModel) {
+        viewModel.event.collectLatest { event ->
+            Log.d("Mkdev",event.toString())
+            onEvent(event)
+        }
+    }
+
+
 
     LaunchedEffect(Unit) {
         viewModel.trackScreenOnce()
@@ -154,7 +190,10 @@ fun WelScreen(
                     icon = R.drawable.google_icon,
                     onClick = {
                         viewModel.trackButtonClick("GoogleButtonClicked")
-                        onEvent(WelScreenEvent.OnGoogleClick)
+                        if (!isSigningIn) {
+                            isSigningIn = true
+                            launchGoogleSignIn()
+                        }
                     }
                 )
 
@@ -171,6 +210,20 @@ fun WelScreen(
                     text = "By continuing, you agree to our Terms of Service and Privacy Policy.",
                     fontSize = 12.sp,
                     color = Color.Gray
+                )
+            }
+        }
+
+        // loader
+        if (state.isLoading) {
+            Box(
+                modifier = Modifier
+                    .fillMaxSize()
+                    .background(Color.Black.copy(alpha = 0.5f)),
+                contentAlignment = Alignment.Center
+            ) {
+                androidx.compose.material3.CircularProgressIndicator(
+                    color = labelColor
                 )
             }
         }

@@ -84,6 +84,7 @@ dependencies {
     implementation(libs.androidx.compose.runtime)
     implementation(libs.firebase.analytics)
     implementation(libs.firebase.database)
+    implementation(libs.firebase.firestore)
 
     // location services
     implementation(libs.play.services.location)
@@ -109,4 +110,7 @@ dependencies {
     implementation("androidx.credentials:credentials:1.2.0")
     implementation("androidx.credentials:credentials-play-services-auth:1.2.0")
     implementation("com.google.android.libraries.identity.googleid:googleid:1.1.0")
+
+//    data store
+    implementation("androidx.datastore:datastore-preferences:1.1.0")
 }

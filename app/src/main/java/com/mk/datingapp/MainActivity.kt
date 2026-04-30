@@ -31,7 +31,7 @@ class MainActivity : ComponentActivity() {
 
         setContent {
             DatingAppTheme {
-                RootNavHost(false)
+                RootNavHost()
             }
         }
     }
