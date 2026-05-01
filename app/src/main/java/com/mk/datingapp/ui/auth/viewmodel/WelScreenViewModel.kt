@@ -45,6 +45,11 @@ class WelScreenViewModel @Inject constructor(
         analyticsRepository.trackButtonClick(name)
     }
 
+    fun clearError(){
+        _state.update {
+            it.copy(error = null)
+        }
+    }
     fun signInWithGoogle(idToken: String){
         viewModelScope.launch {
 
@@ -66,7 +71,7 @@ class WelScreenViewModel @Inject constructor(
                         isLoading = false
                     )
                 }
-                Log.d("Mkdev","NewUser uuid ${user.uid}")
+//                Log.d("Mkdev","NewUser uuid ${user.uid}")
 
                 if (isNewUser) {
                     _event.emit(WelScreenEvent.OnNavigateToProfile)

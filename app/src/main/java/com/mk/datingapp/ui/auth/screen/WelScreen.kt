@@ -1,6 +1,7 @@
 package com.mk.datingapp.ui.auth.screen
 
 import android.util.Log
+import android.widget.Toast
 import androidx.compose.foundation.Image
 import androidx.compose.foundation.background
 import androidx.compose.foundation.clickable
@@ -18,6 +19,7 @@ import androidx.compose.foundation.layout.safeContentPadding
 import androidx.compose.foundation.layout.systemBarsPadding
 import androidx.compose.foundation.layout.width
 import androidx.compose.foundation.shape.RoundedCornerShape
+import androidx.compose.material3.AlertDialog
 import androidx.compose.material3.Button
 import androidx.compose.material3.ButtonDefaults
 import androidx.compose.material3.Icon
@@ -34,6 +36,7 @@ import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Brush
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.layout.ContentScale
+import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.text.font.FontStyle
 import androidx.compose.ui.text.font.FontWeight
@@ -61,6 +64,8 @@ fun WelScreen(
     viewModel: WelScreenViewModel = hiltViewModel()
 ){
 
+    val context  = LocalContext.current
+
     // multiple sigin protection
     var isSigningIn by remember { mutableStateOf(false) }
 
@@ -70,6 +75,7 @@ fun WelScreen(
 
         if (idToken==null){
 //            showError
+            Toast.makeText(context , "token is null", Toast.LENGTH_LONG).show()
         }else{
             viewModel.signInWithGoogle(idToken)
         }
@@ -226,6 +232,21 @@ fun WelScreen(
                     color = labelColor
                 )
             }
+        }
+
+        if(state.error != null) {
+            AlertDialog(
+                onDismissRequest = { viewModel.clearError() },
+                confirmButton = { Button(onClick = { viewModel.clearError() }) {
+                    Text("OK")
+                }},
+                title = {
+                    Text("Error")
+                },
+                text = {
+                    Text(state.error ?: "")
+                }
+            )
         }
     }
 

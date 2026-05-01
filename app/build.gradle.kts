@@ -113,4 +113,8 @@ dependencies {
 
 //    data store
     implementation("androidx.datastore:datastore-preferences:1.1.0")
+
+    // for fake repository
+    testImplementation("org.jetbrains.kotlinx:kotlinx-coroutines-test:1.7.3")
+    testImplementation("io.mockk:mockk:1.13.8")
 }
