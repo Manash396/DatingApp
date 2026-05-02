@@ -18,6 +18,7 @@ import com.google.android.gms.auth.api.signin.GoogleSignInClient
 import com.google.android.gms.auth.api.signin.GoogleSignInOptions
 import com.google.android.libraries.identity.googleid.GetGoogleIdOption
 import com.google.android.libraries.identity.googleid.GoogleIdTokenCredential
+import com.mk.datingapp.BuildConfig
 import kotlinx.coroutines.launch
 
 @Composable
@@ -29,7 +30,7 @@ fun rememberGoogleSignInLauncher(
     val coroutineScope  = rememberCoroutineScope()
 
     val googleIdOption = GetGoogleIdOption.Builder()
-        .setServerClientId("650743784297-hlkt28apl66nt6ps31arki84anftgf8h.apps.googleusercontent.com")
+        .setServerClientId(BuildConfig.GOOGLE_WEB_CLIENT_ID)
         .setFilterByAuthorizedAccounts(false)
         .build()
 

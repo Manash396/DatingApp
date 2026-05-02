@@ -1,4 +1,13 @@
 import com.android.build.api.dsl.ApplicationExtension
+import java.util.Properties
+import java.io.FileInputStream
+
+val localProperties = Properties()
+val localPropertiesFile = rootProject.file("local.properties")
+
+if (localPropertiesFile.exists()) {
+    localProperties.load(FileInputStream(localPropertiesFile))
+}
 
 
 plugins {
@@ -26,6 +35,15 @@ extensions.configure<ApplicationExtension> {
         versionName = "1.0"
 
         testInstrumentationRunner = "androidx.test.runner.AndroidJUnitRunner"
+
+        val googleClientId = localProperties.getProperty("GOOGLE_WEB_CLIENT_ID")
+            ?: throw GradleException("GOOGLE_WEB_CLIENT_ID not found in local.properties")
+
+        buildConfigField(
+            "String",
+            "GOOGLE_WEB_CLIENT_ID",
+            "\"$googleClientId\""
+        )
     }
 
     buildTypes {
@@ -44,6 +62,7 @@ extensions.configure<ApplicationExtension> {
 
     buildFeatures {
         compose = true
+        buildConfig = true
     }
 }
 
