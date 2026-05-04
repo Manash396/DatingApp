@@ -44,6 +44,7 @@ import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import com.mk.datingapp.ui.auth.component.AppTextField
 import com.mk.datingapp.ui.auth.component.GradientButton
+import com.mk.datingapp.ui.profile.state.ProfileCreationState
 import com.mk.datingapp.ui.theme.labelColor
 import com.mk.datingapp.ui.theme.placeholderColor
 import com.mk.datingapp.ui.theme.screenBg
@@ -52,21 +53,19 @@ import com.mk.datingapp.utils.Util.getUserLocation
 
 @OptIn(ExperimentalMaterial3Api::class)
 @Composable
-fun StepOneScreen() {
+fun StepOneScreen(
+    currentState : ProfileCreationState,
+    onStateChanged : (ProfileCreationState) -> Unit,
+    nextStep : () -> Unit
+) {
 
     val context = LocalContext.current
 
     // ---------------- STATE ----------------
-    var fullName by remember { mutableStateOf("") }
-    var userName by remember { mutableStateOf("") }
-    var age by remember { mutableStateOf("") }
-    var gender by remember { mutableStateOf("") }
-    var presence by remember { mutableStateOf("") }
-    var bio by remember { mutableStateOf("") }
 
     var expanded by remember { mutableStateOf(false) }
     val genderOptions = listOf("Male", "Female", "Other")
-    var selectedGender by remember { mutableStateOf("") }
+
 
 
     // ---------------- ERROR STATE ----------------
@@ -79,8 +78,9 @@ fun StepOneScreen() {
 //    -------------- Location ------------------------
     var requestLocation by remember { mutableStateOf(false) }
 
-//    =============== Loader =================================
-    var isLoading by rememberSaveable { mutableStateOf(false)}
+    var isLoading by remember { mutableStateOf(false) }
+
+
 
     if (requestLocation) {
         Log.d("KRISHNA", "enterres the requestLocation ")
@@ -88,10 +88,12 @@ fun StepOneScreen() {
             context,
             onGranted = {
                 getUserLocation(context) {
-                    presence = it
+                    onStateChanged(currentState.copy(location = it))
                     requestLocation = false
-                    Log.d("KRISHNA", presence)
                 }
+            },
+            onNotGranted = {
+                requestLocation = false
             }
         )
     }
@@ -103,6 +105,7 @@ fun StepOneScreen() {
             isLoading = false
         }
     }
+
 
     // ---------------- UI ----------------
 
@@ -132,9 +135,9 @@ fun StepOneScreen() {
             Spacer(modifier = Modifier.height(10.dp))
 
             AppTextField(
-                value = fullName,
+                value = currentState.fullName,
                 onValueChange = {
-                    fullName = it
+                    onStateChanged(currentState.copy(fullName = it))
                     fullNameError = false
                 },
                 placeholder = "Enter name",
@@ -149,9 +152,9 @@ fun StepOneScreen() {
             Spacer(modifier = Modifier.height(10.dp))
 
             AppTextField(
-                value = userName,
+                value = currentState.userName,
                 onValueChange = {
-                    userName= it
+                    onStateChanged(currentState.copy(userName = it))
                     userNameError = false
                 },
                 placeholder = "Enter username",
@@ -170,9 +173,9 @@ fun StepOneScreen() {
                     Spacer(modifier = Modifier.height(10.dp))
 
                     AppTextField(
-                        value = age,
+                        value = currentState.age,
                         onValueChange = {
-                            age = it
+                            onStateChanged(currentState.copy(age = it))
                             ageError = false
                         },
                         placeholder = "e.g. 21",
@@ -207,13 +210,14 @@ fun StepOneScreen() {
                             contentAlignment = Alignment.CenterStart
                         ) {
                             Row(
-                                modifier = Modifier.fillMaxWidth()
+                                modifier = Modifier
+                                    .fillMaxWidth()
                                     .padding(start = 15.dp, end = 7.dp),
                                 verticalAlignment = Alignment.CenterVertically,
                                 horizontalArrangement = Arrangement.SpaceBetween
                             ) {
                                 Text(
-                                    text = selectedGender,
+                                    text = currentState.gender,
                                     color = labelColor
                                 )
 
@@ -235,7 +239,7 @@ fun StepOneScreen() {
                                 DropdownMenuItem(
                                     text = { Text(option) },
                                     onClick = {
-                                        selectedGender = option
+                                        onStateChanged(currentState.copy(gender = option))
                                         expanded = false
                                     }
                                 )
@@ -274,9 +278,9 @@ fun StepOneScreen() {
             Spacer(modifier = Modifier.height(10.dp))
 
             AppTextField(
-                value = presence,
+                value = currentState.location,
                 onValueChange = {
-                    presence = it
+                    onStateChanged(currentState.copy(location = it))
                     presenceError = false
                 },
                 placeholder = "Your location",
@@ -295,8 +299,8 @@ fun StepOneScreen() {
             Spacer(modifier = Modifier.height(10.dp))
 
             TextField(
-                value = bio,
-                onValueChange = { bio = it },
+                value = currentState.about,
+                onValueChange = { onStateChanged(currentState.copy(about = it)) },
                 placeholder = { Text("Tell us about yourself...") },
                 modifier = Modifier
                     .fillMaxWidth()
@@ -315,24 +319,28 @@ fun StepOneScreen() {
             Spacer(modifier = Modifier.height(44.dp))
 
             // -------- BUTTON --------
-            GradientButton(
-                text = "Continue to Photos >>",
-                onClick = {
+                GradientButton(
+                    text = "Continue to Photos >>",
+                    onClick = {
 
-                    // VALIDATION
-                    fullNameError = fullName.isBlank()
-                    ageError = age.isBlank()
-                    presenceError = presence.isBlank()
-                    genderError = selectedGender.isBlank()
+                        // VALIDATION
+                        with(currentState) {
+                            fullNameError = fullName.isBlank()
+                            ageError = age.isBlank()
+                            presenceError = location.isBlank()
+                            genderError = gender.isBlank()
+                            userNameError = userName.isBlank()
+                        }
 
-                    val hasError = fullNameError || ageError || presenceError || genderError
+                        val hasError = fullNameError || ageError || presenceError || genderError || userNameError
 
-                    if (!hasError) {
-
+                        if (!hasError) {
+                            nextStep()
+                        }
                     }
-                }
-            )
+                )
         }
+
         // loader
         if (isLoading) {
             Box(
@@ -354,11 +362,12 @@ fun StepOneScreen() {
             }
         }
 
+
     }
 }
 
 @Preview(showBackground = true, showSystemUi = true)
 @Composable
 fun StepOneScreenPreview() {
-    StepOneScreen()
+    StepOneScreen(currentState = ProfileCreationState() , {} ,{})
 }

@@ -25,7 +25,7 @@ fun RootNavHost(
 
     NavHost(
         navController = navController,
-        startDestination = "splash"
+        startDestination = "profileCre"
     ) {
 
         composable("splash") {
@@ -51,11 +51,13 @@ fun RootNavHost(
         }
 
         composable("profileCre") {
-            ProfileCreationScreen(){
-                navController.navigate("main"){
-                    popUpTo("profileCre"){ inclusive =  true}
+            ProfileCreationScreen(
+                onCompletion = {
+                    navController.navigate("main"){
+                        popUpTo("profileCre"){ inclusive =  true}
+                    }
                 }
-            }
+            )
         }
 
     }

@@ -95,7 +95,8 @@ fun AppPasswordField(
                 cursorColor = labelColor,
                 focusedTextColor = labelColor,
                 unfocusedTextColor = placeholderColor
-            )
+            ),
+            singleLine = true
         )
 
         Column (

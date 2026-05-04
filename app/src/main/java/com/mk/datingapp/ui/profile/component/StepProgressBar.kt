@@ -35,14 +35,14 @@ fun StepProgressBar(
                     )
 
                     val animatedWidth by animateDpAsState(
-                        targetValue = if (index == currentStep - 1) 70.dp else 40.dp,
+                        targetValue = if (index <= currentStep - 1) 70.dp else 40.dp,
                         label = ""
                     )
 
                 Box(
                     modifier = Modifier
                         .height(6.dp)
-                        .width(animatedWidth)
+                        .width(70.dp)
                         .clip(RoundedCornerShape(50))
                         .background(animatedColor)
                 )

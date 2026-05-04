@@ -73,8 +73,8 @@ fun AppTextField(
                 focusedTextColor = labelColor,
                 unfocusedTextColor = placeholderColor,
             ),
-            enabled = enabled
-
+            enabled = enabled,
+            singleLine = true
         )
 
             Column (

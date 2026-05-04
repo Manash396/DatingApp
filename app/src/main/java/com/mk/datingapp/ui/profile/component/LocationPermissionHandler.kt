@@ -30,7 +30,8 @@ import com.google.android.gms.location.Priority
 @Composable
 fun LocationPermissionHandler(
     context: Context,
-    onGranted: () -> Unit
+    onGranted: () -> Unit,
+    onNotGranted:() ->  Unit
 ) {
 
     val permissionState = rememberPermissionState(
@@ -48,6 +49,8 @@ fun LocationPermissionHandler(
     ) { result ->
         if (result.resultCode == Activity.RESULT_OK) {
             onGranted()
+        }else{
+            onNotGranted()
         }
     }
 
