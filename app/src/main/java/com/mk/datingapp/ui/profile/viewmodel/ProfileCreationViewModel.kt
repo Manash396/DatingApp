@@ -33,18 +33,7 @@ class ProfileCreationViewModel @Inject constructor(
         _uiState.value = newState
     }
 
-    fun toggleImage(uri : Uri){
-        _uiState.update{ state ->
-            val updated  = if (state.selectedImages.contains(uri)){
-                state.selectedImages - uri
-            }else{
-                if (state.selectedImages.size < 5)
-                    state.selectedImages + uri
-                else state.selectedImages
-            }
-            state.copy(selectedImages = updated)
-        }
-    }
+
 
     fun setImages(images: List<Uri>) {
         _uiState.update { it.copy(images = images) }

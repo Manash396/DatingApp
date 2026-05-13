@@ -75,6 +75,7 @@ kotlin {
 }
 
 dependencies {
+    implementation(libs.androidx.compose.animation)
     implementation(libs.androidx.core.ktx)
     implementation(libs.androidx.lifecycle.runtime.ktx)
     implementation(libs.androidx.activity.compose)
@@ -101,6 +102,7 @@ dependencies {
     implementation(libs.androidx.compose.ui.tooling.preview)
     implementation(libs.androidx.compose.material3)
     implementation(libs.androidx.compose.runtime)
+    implementation(libs.androidx.ui.graphics)
     implementation(libs.firebase.analytics)
     implementation(libs.firebase.database)
     implementation(libs.firebase.firestore)

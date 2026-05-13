@@ -318,17 +318,19 @@ fun OtpScreen(
                     .padding(start = 16.dp , end = 16.dp)
             ) {
 
-                GradientButton("Verify") {
-                    val otpValues  = otpValues.joinToString(""){ it.value }
+                GradientButton(
+                    text  = "Verify",
+                    onClick = {
+                        val otpValues  = otpValues.joinToString(""){ it.value }
 
-                    if(otpValues.length <6){
-                        showError = true
-                    }else{
-                        showError = false
-                        triggerVerifi = true
+                        if(otpValues.length <6){
+                            showError = true
+                        }else{
+                            showError = false
+                            triggerVerifi = true
+                        }
                     }
-
-                }
+                )
 
                 Spacer(modifier = Modifier.height(12.dp))
 

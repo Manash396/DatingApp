@@ -16,3 +16,5 @@ val labelColor = Color(0xFFA791F1)
 val textFieldContColor = Color(0xFFFEEBFF)
 val placeholderColor = Color(0xFFC3ABC9)
 val screenBg = Color(0xFF0D0F1A)
+
+val questionBg = Color(0xFF2A1E3F).copy(alpha = 0.5f)

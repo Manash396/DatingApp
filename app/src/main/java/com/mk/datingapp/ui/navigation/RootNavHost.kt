@@ -12,6 +12,7 @@ import androidx.navigation.compose.navigation
 import androidx.navigation.compose.rememberNavController
 import com.mk.datingapp.ui.auth.screen.AnimScreen
 import com.mk.datingapp.ui.auth.viewmodel.SessionViewModel
+import com.mk.datingapp.ui.profile.screen.ProfileCompletedScreen
 import com.mk.datingapp.ui.profile.screen.ProfileCreationScreen
 
 
@@ -31,7 +32,8 @@ fun RootNavHost(
         composable("splash") {
             AnimScreen {
                 if (isLoggedIn) {
-                    navController.navigate("main") {
+//                    val dest  = if ()
+                    navController.navigate("profileCre") {
                         popUpTo("splash") { inclusive = true }
                     }
                 } else {
@@ -53,12 +55,22 @@ fun RootNavHost(
         composable("profileCre") {
             ProfileCreationScreen(
                 onCompletion = {
-                    navController.navigate("main"){
+                    navController.navigate("profileDone"){
                         popUpTo("profileCre"){ inclusive =  true}
                     }
                 }
             )
         }
+
+        composable("profileDone") {
+            ProfileCompletedScreen {
+                navController.navigate("main"){
+                    popUpTo("profileDone"){ inclusive =  true}
+                }
+            }
+        }
+
+
 
     }
 }

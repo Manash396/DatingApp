@@ -3,7 +3,7 @@ package com.mk.datingapp.ui.profile.state
 import android.net.Uri
 
 data class ProfileCreationState(
-    val step: Int = 2,
+    val step: Int = 4,
     val isLoading :Boolean = false,
     val error : String? = null,
 
@@ -18,11 +18,16 @@ data class ProfileCreationState(
 
     // Step 2 (Gallery)
     val images: List<Uri?> = List(6){null},
-    val selectedImages: List<Uri> = emptyList(),
+//    val selectedImages: List<Uri> = emptyList(),
 
     // Step 3
-    val name: String = "",
+    val selectedTags: List<String> = emptyList(),
 
     // Step 4
-    val bio: String = ""
+    val answers: Map<String, String> = emptyMap()
+)
+
+data class Question(
+    val title: String,
+    val options: List<String>
 )

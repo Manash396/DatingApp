@@ -119,6 +119,7 @@ fun StepOneScreen(
                 .fillMaxSize()
                 .background(Color.Black)
                 .verticalScroll(rememberScrollState())
+                .padding(bottom = 13.dp)
         ) {
 
             Text(

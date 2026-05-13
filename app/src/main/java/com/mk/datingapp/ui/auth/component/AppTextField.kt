@@ -49,9 +49,9 @@ fun AppTextField(
             errorShow = true
 
             delay(3000)
-            errorShow = false
             resetErrorMessage()
         }
+        errorShow = false
     }
 
     Column(

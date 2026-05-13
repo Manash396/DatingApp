@@ -45,7 +45,9 @@ fun NavGraphBuilder.authNavGraph(navController: NavController) {
 
         WelScreen(
             onEvent = { event ->
+
                 when (event) {
+
                     WelScreenEvent.OnEmailClick -> {
                         navController.navigate("signup")
                     }

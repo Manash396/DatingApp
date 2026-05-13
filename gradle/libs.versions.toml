@@ -22,6 +22,8 @@ hilt = "2.59.2"
 firebaseDatabase = "22.0.1"
 firebaseAnalytics = "23.2.0"
 firebaseFirestore = "26.2.0"
+animation = "1.11.0"
+uiGraphics = "1.11.0"
 
 [libraries]
 androidx-core-ktx = { group = "androidx.core", name = "core-ktx", version.ref = "coreKtx" }
@@ -51,6 +53,8 @@ hilt-compiler = { module = "com.google.dagger:hilt-compiler", version.ref = "hil
 firebase-database = { group = "com.google.firebase", name = "firebase-database", version.ref = "firebaseDatabase" }
 firebase-analytics = { group = "com.google.firebase", name = "firebase-analytics", version.ref = "firebaseAnalytics" }
 firebase-firestore = { group = "com.google.firebase", name = "firebase-firestore", version.ref = "firebaseFirestore" }
+androidx-compose-animation = { group = "androidx.compose.animation", name = "animation", version.ref = "animation" }
+androidx-ui-graphics = { group = "androidx.compose.ui", name = "ui-graphics", version.ref = "uiGraphics" }
 
 [plugins]
 android-application = { id = "com.android.application", version.ref = "agp" }

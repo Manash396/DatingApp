@@ -1,6 +1,7 @@
 package com.mk.datingapp.ui.profile.component
 
 import android.net.Uri
+import android.widget.Toast
 import androidx.activity.compose.rememberLauncherForActivityResult
 import androidx.activity.result.PickVisualMediaRequest
 import androidx.activity.result.contract.ActivityResultContracts
@@ -54,6 +55,7 @@ import androidx.compose.ui.graphics.PathEffect
 import androidx.compose.ui.graphics.drawscope.Stroke
 import androidx.compose.ui.input.pointer.pointerInput
 import androidx.compose.ui.layout.ContentScale
+import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.tooling.preview.Preview
@@ -73,13 +75,15 @@ fun StepTwoScreen(
     onNextStep: () -> Unit
 ) {
 
+    val context = LocalContext.current
+
     var currentImageIndex by rememberSaveable { mutableIntStateOf(0) }
 
     val launcher = rememberLauncherForActivityResult(
         contract = ActivityResultContracts.PickMultipleVisualMedia(2)
     ) { uris ->
         if (uris.isNotEmpty()) {
-            val images  = currentState.images.toMutableList()
+            val images = currentState.images.toMutableList()
             images[currentImageIndex] = uris[0]
 
             onStateChanged(
@@ -95,6 +99,7 @@ fun StepTwoScreen(
             .fillMaxSize()
             .verticalScroll(rememberScrollState())
             .background(Color.Black)
+            .padding(bottom = 13.dp)
     ) {
 
         //  Title
@@ -115,9 +120,9 @@ fun StepTwoScreen(
 
         //  TOP SECTION
         Row(
-            modifier = Modifier.fillMaxWidth()
-                .aspectRatio(1f)
-            ,
+            modifier = Modifier
+                .fillMaxWidth()
+                .aspectRatio(1f),
             horizontalArrangement = Arrangement.spacedBy(8.dp)
         ) {
 
@@ -148,7 +153,11 @@ fun StepTwoScreen(
                     )
                 } else {
                     Column(horizontalAlignment = Alignment.CenterHorizontally) {
-                        Icon(painter = painterResource(R.drawable.baseline_add_photo_alternate_24), null, tint = labelColor)
+                        Icon(
+                            painter = painterResource(R.drawable.baseline_add_photo_alternate_24),
+                            null,
+                            tint = labelColor
+                        )
                         Text("Primary Portrait", color = Color.White, fontSize = 12.sp)
                         Text("Click to upload", color = Color.Gray, fontSize = 10.sp)
                     }
@@ -157,9 +166,9 @@ fun StepTwoScreen(
 
             //  RIGHT STACK
             Column(
-                modifier = Modifier.weight(1f)
-                    .fillMaxHeight()
-                ,
+                modifier = Modifier
+                    .weight(1f)
+                    .fillMaxHeight(),
                 verticalArrangement = Arrangement.spacedBy(8.dp)
             ) {
 
@@ -171,7 +180,7 @@ fun StepTwoScreen(
                             .fillMaxHeight()
                             .clip(RoundedCornerShape(12.dp))
                             .background(Color.Black)
-                            .drawBehind{
+                            .drawBehind {
                                 val strokeWidth = 2.dp.toPx()
                                 val dashWidth = 5.dp.toPx()
                                 val gapWidth = 3.dp.toPx()
@@ -189,7 +198,7 @@ fun StepTwoScreen(
                                 )
                             }
                             .clickable {
-                                currentImageIndex = 1+index
+                                currentImageIndex = 1 + index
                                 launcher.launch(
                                     PickVisualMediaRequest(
                                         ActivityResultContracts.PickVisualMedia.ImageOnly
@@ -199,17 +208,19 @@ fun StepTwoScreen(
                         contentAlignment = Alignment.Center
                     ) {
 
-                        if (currentState.images[1+index] != null){
+                        if (currentState.images[1 + index] != null) {
                             Image(
-                                painter = rememberAsyncImagePainter(currentState.images[1+index
-                                ]),
+                                painter = rememberAsyncImagePainter(
+                                    currentState.images[1 + index
+                                    ]
+                                ),
                                 contentDescription = null,
                                 contentScale = ContentScale.Crop,
                                 modifier = Modifier.fillMaxSize()
                             )
                         } else {
-                                Icon(Icons.Default.Add, null, tint = Color.White)
-                            }
+                            Icon(Icons.Default.Add, null, tint = Color.White)
+                        }
 
                     }
                 }
@@ -229,7 +240,7 @@ fun StepTwoScreen(
                         .aspectRatio(1f)
                         .clip(RoundedCornerShape(12.dp))
                         .background(Color.Black)
-                        .drawBehind{
+                        .drawBehind {
                             val strokeWidth = 2.dp.toPx()
                             val dashWidth = 5.dp.toPx()
                             val gapWidth = 3.dp.toPx()
@@ -247,7 +258,7 @@ fun StepTwoScreen(
                             )
                         }
                         .clickable {
-                            currentImageIndex = 3+index
+                            currentImageIndex = 3 + index
                             launcher.launch(
                                 PickVisualMediaRequest(
                                     ActivityResultContracts.PickVisualMedia.ImageOnly
@@ -256,9 +267,9 @@ fun StepTwoScreen(
                         },
                     contentAlignment = Alignment.Center
                 ) {
-                    if (currentState.images[3+index] != null){
+                    if (currentState.images[3 + index] != null) {
                         Image(
-                            painter = rememberAsyncImagePainter(currentState.images[3+index]),
+                            painter = rememberAsyncImagePainter(currentState.images[3 + index]),
                             contentDescription = null,
                             contentScale = ContentScale.Crop,
                             modifier = Modifier.fillMaxSize()
@@ -299,18 +310,18 @@ fun StepTwoScreen(
 
         Row(
             modifier = Modifier
-                .fillMaxWidth()
-            ,
+                .fillMaxWidth(),
             verticalAlignment = Alignment.CenterVertically,
-        ){
+        ) {
 
 
             Icon(
                 imageVector = Icons.AutoMirrored.Filled.ArrowBack,
                 contentDescription = "Back",
                 tint = Color.White.copy(alpha = 0.8f),
-                modifier = Modifier.size(24.dp)
-                    .clickable{
+                modifier = Modifier
+                    .size(24.dp)
+                    .clickable {
                         onPrevStep()
                     }
             )
@@ -320,7 +331,17 @@ fun StepTwoScreen(
             GradientButton(
                 text = "Continue",
                 onClick = {
-
+                    // check First
+                    val isAllNull = currentState.images.all { it == null }
+                    if (isAllNull) {
+                        Toast.makeText(
+                            context,
+                            "At least one profile picture is required",
+                            Toast.LENGTH_LONG
+                        ).show()
+                    } else {
+                        onNextStep()
+                    }
                 }
             )
         }
@@ -334,7 +355,6 @@ fun StepTwoScreenPreview() {
     val dummyState = ProfileCreationState(
         step = 2,
         images = emptyList(),
-        selectedImages = emptyList()
     )
 
     StepTwoScreen(
