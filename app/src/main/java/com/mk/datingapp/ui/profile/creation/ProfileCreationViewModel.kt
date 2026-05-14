@@ -1,8 +1,7 @@
-package com.mk.datingapp.ui.profile.viewmodel
+package com.mk.datingapp.ui.profile.creation
 
 import android.net.Uri
 import androidx.lifecycle.ViewModel
-import com.mk.datingapp.ui.profile.state.ProfileCreationState
 import dagger.hilt.android.lifecycle.HiltViewModel
 import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.StateFlow

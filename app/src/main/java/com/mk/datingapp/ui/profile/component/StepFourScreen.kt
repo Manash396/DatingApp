@@ -1,13 +1,11 @@
 package com.mk.datingapp.ui.profile.component
 
-import android.widget.Toast
 import androidx.compose.foundation.background
 import androidx.compose.foundation.border
 import androidx.compose.foundation.clickable
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Column
-import androidx.compose.foundation.layout.FlowRow
 import androidx.compose.foundation.layout.Row
 import androidx.compose.foundation.layout.Spacer
 import androidx.compose.foundation.layout.fillMaxSize
@@ -39,12 +37,9 @@ import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.text.style.TextDecoration
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
-import com.mk.datingapp.ui.auth.component.GradientButton
-import com.mk.datingapp.ui.profile.state.ProfileCreationState
-import com.mk.datingapp.utils.AppConstant.categories
+import com.mk.datingapp.utils.component.GradientButton
+import com.mk.datingapp.ui.profile.creation.ProfileCreationState
 import com.mk.datingapp.utils.AppConstant.questions
-import kotlin.collections.component1
-import kotlin.collections.component2
 
 @Composable
 fun StepFourScreen(

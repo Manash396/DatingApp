@@ -1,4 +1,4 @@
-package com.mk.datingapp.ui.auth.state
+package com.mk.datingapp.ui.auth.wel
 
 data class WelUiState(
     val isLoading: Boolean = false,

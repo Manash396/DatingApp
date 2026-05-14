@@ -1,4 +1,4 @@
-package com.mk.datingapp.ui.auth.screen
+package com.mk.datingapp.ui.auth.login
 
 import android.util.Log
 import androidx.compose.foundation.background
@@ -18,6 +18,7 @@ import androidx.compose.foundation.layout.size
 import androidx.compose.foundation.rememberScrollState
 import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.foundation.verticalScroll
+import androidx.compose.material3.CircularProgressIndicator
 import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
@@ -30,29 +31,25 @@ import androidx.compose.ui.geometry.Offset
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.graphics.Shadow
 import androidx.compose.ui.text.TextStyle
-import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import androidx.navigation.compose.rememberNavController
 import com.mk.datingapp.ui.theme.headerTextBgColor
-import com.mk.datingapp.ui.theme.headerTextColor
 import com.mk.datingapp.ui.theme.labelColor
 import androidx.compose.runtime.getValue
 import androidx.compose.runtime.saveable.rememberSaveable
 import androidx.compose.runtime.setValue
 import androidx.navigation.NavController
-import com.airbnb.lottie.Lottie
-import com.airbnb.lottie.compose.LottieAnimatable
 import com.airbnb.lottie.compose.LottieAnimation
 import com.airbnb.lottie.compose.LottieCompositionSpec
 import com.airbnb.lottie.compose.LottieConstants
 import com.airbnb.lottie.compose.rememberLottieComposition
 import com.mk.datingapp.R
-import com.mk.datingapp.ui.auth.component.AppPasswordField
-import com.mk.datingapp.ui.auth.component.AppTextField
-import com.mk.datingapp.ui.auth.component.GradientButton
-import com.mk.datingapp.ui.auth.component.SocialButton
+import com.mk.datingapp.utils.component.AppPasswordField
+import com.mk.datingapp.utils.component.AppTextField
+import com.mk.datingapp.utils.component.GradientButton
+import com.mk.datingapp.utils.component.SocialButton
 import kotlinx.coroutines.delay
 
 @Composable
@@ -288,7 +285,7 @@ fun LoginScreen(
                     .background(Color.Black.copy(alpha = 0.5f)),
                 contentAlignment = Alignment.Center
             ) {
-                androidx.compose.material3.CircularProgressIndicator(
+                CircularProgressIndicator(
                     color = labelColor
                 )
             }

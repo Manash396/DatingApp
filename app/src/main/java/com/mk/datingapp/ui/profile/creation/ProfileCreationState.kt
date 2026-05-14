@@ -1,4 +1,4 @@
-package com.mk.datingapp.ui.profile.state
+package com.mk.datingapp.ui.profile.creation
 
 import android.net.Uri
 

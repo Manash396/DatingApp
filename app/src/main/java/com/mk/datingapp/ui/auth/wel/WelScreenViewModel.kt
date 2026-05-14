@@ -1,16 +1,9 @@
-package com.mk.datingapp.ui.auth.viewmodel
+package com.mk.datingapp.ui.auth.wel
 
-import android.content.Context
-import android.util.Log
-import androidx.compose.runtime.getValue
-import androidx.compose.runtime.mutableStateOf
-import androidx.compose.runtime.setValue
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
 import com.mk.datingapp.domain.repository.AnalyticsRepository
 import com.mk.datingapp.domain.repository.AuthRepository
-import com.mk.datingapp.ui.auth.event.WelScreenEvent
-import com.mk.datingapp.ui.auth.state.WelUiState
 import dagger.hilt.android.lifecycle.HiltViewModel
 import kotlinx.coroutines.flow.MutableSharedFlow
 import kotlinx.coroutines.flow.MutableStateFlow

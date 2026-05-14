@@ -3,7 +3,8 @@ package com.mk.datingapp.ui.auth.viewmodel
 import com.mk.datingapp.domain.model.AuthUser
 import com.mk.datingapp.domain.repository.AnalyticsRepository
 import com.mk.datingapp.domain.repository.AuthRepository
-import com.mk.datingapp.ui.auth.event.WelScreenEvent
+import com.mk.datingapp.ui.auth.wel.WelScreenEvent
+import com.mk.datingapp.ui.auth.wel.WelScreenViewModel
 import com.mk.datingapp.util.MainDispatcherRule
 import io.mockk.Runs
 import io.mockk.coEvery

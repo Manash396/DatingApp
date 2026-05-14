@@ -1,4 +1,4 @@
-package com.mk.datingapp.ui.auth.viewmodel
+package com.mk.datingapp.ui.session
 
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
@@ -16,7 +16,7 @@ class SessionViewModel @Inject constructor(
     val isLoggedIn = userPreferences.isLoggedIn
         .stateIn(
             viewModelScope,
-            SharingStarted.WhileSubscribed(5000),
+            SharingStarted.Companion.WhileSubscribed(5000),
             false
         )
 

@@ -1,4 +1,4 @@
-package com.mk.datingapp.ui.auth.screen
+package com.mk.datingapp.ui.auth.verify
 
 import androidx.compose.animation.AnimatedVisibility
 import androidx.compose.animation.fadeIn
@@ -25,8 +25,7 @@ import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.foundation.text.KeyboardOptions
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.filled.ArrowBackIosNew
-import androidx.compose.material3.Button
-import androidx.compose.material3.ButtonDefaults
+import androidx.compose.material3.CircularProgressIndicator
 import androidx.compose.material3.IconButton
 import androidx.compose.material3.OutlinedTextField
 import androidx.compose.material3.Text
@@ -53,6 +52,7 @@ import androidx.compose.ui.input.key.onKeyEvent
 import androidx.compose.ui.input.key.type
 import androidx.compose.ui.layout.ContentScale
 import androidx.compose.ui.platform.LocalHapticFeedback
+import androidx.compose.ui.text.TextStyle
 import androidx.compose.ui.text.font.FontStyle
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.text.input.KeyboardType
@@ -63,10 +63,9 @@ import androidx.compose.ui.unit.sp
 import androidx.core.text.isDigitsOnly
 import androidx.navigation.NavController
 import androidx.navigation.compose.rememberNavController
-import com.mk.datingapp.ui.auth.component.GradientButton
+import com.mk.datingapp.utils.component.GradientButton
 import com.mk.datingapp.ui.theme.labelColor
 import kotlinx.coroutines.delay
-import java.time.format.TextStyle
 import java.util.Locale
 
 @Composable
@@ -255,7 +254,7 @@ fun OtpScreen(
                                     false
                                 }
                             ,
-                            textStyle = androidx.compose.ui.text.TextStyle(
+                            textStyle = TextStyle(
                                 textAlign = TextAlign.Center,
                                 fontSize = 18.sp
                             ),
@@ -371,7 +370,7 @@ fun OtpScreen(
                 ),
                 contentAlignment = Alignment.Center
             ) {
-                androidx.compose.material3.CircularProgressIndicator(
+                CircularProgressIndicator(
                     color = labelColor
                 )
             }

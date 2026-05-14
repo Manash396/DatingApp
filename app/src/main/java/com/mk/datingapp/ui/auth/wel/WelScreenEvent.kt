@@ -1,4 +1,4 @@
-package com.mk.datingapp.ui.auth.event
+package com.mk.datingapp.ui.auth.wel
 
 sealed class WelScreenEvent {
     object OnLoginClick : WelScreenEvent()

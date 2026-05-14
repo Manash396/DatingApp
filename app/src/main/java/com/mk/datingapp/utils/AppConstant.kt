@@ -1,7 +1,6 @@
 package com.mk.datingapp.utils
 
-import com.mk.datingapp.ui.profile.state.ProfileCreationState
-import com.mk.datingapp.ui.profile.state.Question
+import com.mk.datingapp.ui.profile.creation.Question
 
 object AppConstant {
     val categories = mapOf(

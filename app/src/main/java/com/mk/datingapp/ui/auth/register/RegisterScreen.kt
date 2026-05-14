@@ -1,7 +1,5 @@
-package com.mk.datingapp.ui.auth.screen
+package com.mk.datingapp.ui.auth.register
 
-import android.util.Log
-import android.widget.ImageButton
 import androidx.compose.foundation.Image
 import androidx.compose.foundation.background
 import androidx.compose.foundation.layout.Box
@@ -20,7 +18,9 @@ import androidx.compose.foundation.rememberScrollState
 import androidx.compose.foundation.verticalScroll
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.filled.ArrowBackIosNew
+import androidx.compose.material3.Checkbox
 import androidx.compose.material3.CheckboxDefaults
+import androidx.compose.material3.CircularProgressIndicator
 import androidx.compose.material3.IconButton
 import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.Text
@@ -44,10 +44,9 @@ import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import androidx.navigation.NavController
 import androidx.navigation.compose.rememberNavController
-import com.mk.datingapp.ui.auth.component.AppPasswordField
-import com.mk.datingapp.ui.auth.component.AppTextField
-import com.mk.datingapp.ui.auth.component.GradientButton
-import com.mk.datingapp.ui.theme.headerTextBgColor
+import com.mk.datingapp.utils.component.AppPasswordField
+import com.mk.datingapp.utils.component.AppTextField
+import com.mk.datingapp.utils.component.GradientButton
 import com.mk.datingapp.ui.theme.labelColor
 import kotlinx.coroutines.delay
 
@@ -280,7 +279,7 @@ fun RegisterScreen(
                     .fillMaxWidth()
                     .padding(start = 16.dp, end = 16.dp)
             ) {
-                androidx.compose.material3.Checkbox(
+                Checkbox(
                     checked = isChecked,
                     onCheckedChange = { isChecked = it }, colors = CheckboxDefaults.colors(
                         checkmarkColor = Color.White,
@@ -336,7 +335,7 @@ fun RegisterScreen(
                     .background(Color.Black.copy(alpha = 0.5f)),
                 contentAlignment = Alignment.Center
             ) {
-                androidx.compose.material3.CircularProgressIndicator(
+                CircularProgressIndicator(
                     color = labelColor
                 )
             }

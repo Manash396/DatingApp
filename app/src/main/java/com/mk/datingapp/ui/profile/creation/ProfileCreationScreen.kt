@@ -1,4 +1,4 @@
-package com.mk.datingapp.ui.profile.screen
+package com.mk.datingapp.ui.profile.creation
 
 import androidx.compose.animation.AnimatedContent
 import androidx.compose.animation.fadeIn
@@ -14,6 +14,7 @@ import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.safeContentPadding
+import androidx.compose.material3.CircularProgressIndicator
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.getValue
@@ -32,7 +33,7 @@ import com.mk.datingapp.ui.profile.component.StepOneScreen
 import com.mk.datingapp.ui.profile.component.StepProgressBar
 import com.mk.datingapp.ui.profile.component.StepThreeScreen
 import com.mk.datingapp.ui.profile.component.StepTwoScreen
-import com.mk.datingapp.ui.profile.viewmodel.ProfileCreationViewModel
+import com.mk.datingapp.ui.profile.creation.ProfileCreationViewModel
 import com.mk.datingapp.ui.theme.labelColor
 
 @Composable
@@ -167,7 +168,7 @@ fun ProfileCreationScreen(
                     ),
                 contentAlignment = Alignment.Center
             ) {
-                androidx.compose.material3.CircularProgressIndicator(
+                CircularProgressIndicator(
                     color = labelColor
                 )
             }

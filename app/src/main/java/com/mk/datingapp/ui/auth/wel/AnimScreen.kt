@@ -1,4 +1,4 @@
-package com.mk.datingapp.ui.auth.screen
+package com.mk.datingapp.ui.auth.wel
 
 import android.util.Log
 import androidx.compose.foundation.background
