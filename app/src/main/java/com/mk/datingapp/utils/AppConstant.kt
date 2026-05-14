@@ -3,6 +3,8 @@ package com.mk.datingapp.utils
 import com.mk.datingapp.ui.profile.creation.Question
 
 object AppConstant {
+
+    val mainScreenList =  listOf("home", "explore", "chat", "profile")
     val categories = mapOf(
         "LIFESTYLE" to listOf("Slow Living", "Digital Nomad", "Wellness", "Night Owl", "Minimalism"),
         "ART & CULTURE" to listOf("Contemporary Art", "Poetry", "Cinematography", "Architecture", "Opera"),

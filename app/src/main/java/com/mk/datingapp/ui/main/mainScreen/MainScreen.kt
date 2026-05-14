@@ -19,21 +19,26 @@ import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.safeContentPadding
 import androidx.compose.foundation.layout.size
+import androidx.compose.foundation.shape.CircleShape
 import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.automirrored.filled.Chat
 import androidx.compose.material.icons.filled.Chat
 import androidx.compose.material.icons.filled.Explore
 import androidx.compose.material.icons.filled.Home
+import androidx.compose.material.icons.filled.Notifications
 import androidx.compose.material.icons.filled.Person
 import androidx.compose.material3.Icon
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.runtime.getValue
+import androidx.compose.runtime.mutableFloatStateOf
 import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.remember
+import androidx.compose.runtime.rememberCoroutineScope
 import androidx.compose.runtime.setValue
+import androidx.compose.runtime.withFrameNanos
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.clip
@@ -46,19 +51,24 @@ import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.graphics.drawscope.Stroke
 import androidx.compose.ui.graphics.drawscope.rotate
 import androidx.compose.ui.graphics.drawscope.withTransform
+import androidx.compose.ui.text.font.FontWeight
+import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
+import androidx.compose.ui.unit.sp
 import androidx.navigation.NavController
 import androidx.navigation.compose.NavHost
 import androidx.navigation.compose.composable
 import androidx.navigation.compose.currentBackStackEntryAsState
 import androidx.navigation.compose.rememberNavController
+import com.mk.datingapp.ui.main.mainScreen.home.HomeScreen
+import com.mk.datingapp.ui.theme.labelColor
+import com.mk.datingapp.utils.AppConstant.mainScreenList
 
 @Composable
-fun MainScreen(){
-    val navController = rememberNavController()
+fun MainScreen() {
 
-    val items = listOf("home","explore", "chat", "profile")
+    val navController = rememberNavController()
 
     Box(
         modifier = Modifier
@@ -66,21 +76,25 @@ fun MainScreen(){
             .background(Color.Black)
             .safeContentPadding()
             .padding(start = 20.dp, end = 20.dp, bottom = 10.dp)
-    ){
+    ) {
+
 
         NavHost(
             navController = navController,
             startDestination = "home",
-            modifier = Modifier.fillMaxSize(
-            )
-        ){
-            composable("home") { Text("HomeScreen") }
+            modifier = Modifier.fillMaxSize()
+        ) {
+            composable("home") { HomeScreen() }
             composable("chat") { Text("Chat Screen") }
             composable("explore") { Text("Explore Screen") }
             composable("profile") { Text("Profile Screen") }
         }
 
-        CustomBottomBar(navController,items,modifier = Modifier.align(Alignment.BottomCenter))
+        CustomBottomBar(
+            navController,
+            mainScreenList,
+            modifier = Modifier.align(Alignment.BottomCenter)
+        )
 
     }
 }
@@ -88,11 +102,13 @@ fun MainScreen(){
 
 @Composable
 fun CustomBottomBar(
-    navController: NavController ,
-    items : List<String>,
-    modifier : Modifier = Modifier
-){
-    val routeCurrent  = navController.currentBackStackEntryAsState().value?.destination?.route
+    navController: NavController,
+    items: List<String>,
+    modifier: Modifier = Modifier
+) {
+
+
+    val routeCurrent = navController.currentBackStackEntryAsState().value?.destination?.route
 
     val infiniteTransition = rememberInfiniteTransition(label = "")
 
@@ -135,12 +151,12 @@ fun CustomBottomBar(
                             .toTypedArray(),
                         center = center
                     )
-                        drawRoundRect(
-                            brush = brush,
-                            size = size,
-                            cornerRadius = CornerRadius(100f, 100f),
-                            style = Stroke(width = strokeWidth)
-                        )
+                    drawRoundRect(
+                        brush = brush,
+                        size = size,
+                        cornerRadius = CornerRadius(100f, 100f),
+                        style = Stroke(width = strokeWidth)
+                    )
 
                 }
             }
@@ -151,7 +167,7 @@ fun CustomBottomBar(
     {
 
         Row(
-            modifier = modifier
+            modifier = Modifier
                 .fillMaxWidth()
                 .padding(8.dp)
                 .padding(vertical = 7.dp)
@@ -162,29 +178,29 @@ fun CustomBottomBar(
             items.forEach { route ->
                 val isSelected = routeCurrent == route
 
-                val scale = remember { Animatable(1f) }
+                var targetScale by remember(route) { mutableFloatStateOf(1f) }
 
                 LaunchedEffect(isSelected) {
                     if (isSelected) {
-                        scale.animateTo(
-                            1.8f, // overshoot
-                            animationSpec = tween(200)
-                        )
-                        scale.animateTo(
-                            1.55f,
-                            animationSpec = spring(
-                                dampingRatio = 0.3f,
-                                stiffness = 200f
-                            )
-                        )
-                        scale.animateTo(
-                            1.6f,
-                            animationSpec = spring()
-                        )
+                        targetScale = 1f
+
+                        withFrameNanos { } //  wait 1 frame
+
+                        targetScale = 1.6f
                     } else {
-                        scale.animateTo(1f)
+                        targetScale = 1f
                     }
                 }
+
+                val scale by animateFloatAsState(
+                    targetValue = targetScale,
+                    animationSpec = spring(
+                        dampingRatio = 0.4f, //
+                        stiffness = 300f     //
+                    ),
+                    label = ""
+                )
+
 
                 Icon(
                     imageVector = when (route) {
@@ -194,14 +210,17 @@ fun CustomBottomBar(
                         else -> Icons.Default.Person
                     },
                     contentDescription = route,
-                    tint = if (isSelected) Color(0xFFB388FF) else Color.White,
-                    modifier = modifier
+                    tint = if (isSelected) labelColor else Color.White,
+                    modifier = Modifier
                         .size(27.dp)
-                        .scale(scale.value)
+                        .scale(scale)
                         .clickable {
                             navController.navigate(route) {
-                                popUpTo("home")
+                                popUpTo("home"){
+                                    saveState = true
+                                }
                                 launchSingleTop = true
+                                restoreState = true
                             }
                         }
                 )
@@ -214,7 +233,7 @@ fun CustomBottomBar(
 
 @Preview(showBackground = true, showSystemUi = true)
 @Composable
-fun MainScreenPreview(){
+fun MainScreenPreview() {
     MainScreen()
 }
 
