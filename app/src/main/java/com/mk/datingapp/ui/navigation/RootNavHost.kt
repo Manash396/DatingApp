@@ -24,7 +24,7 @@ fun RootNavHost(
 
     NavHost(
         navController = navController,
-        startDestination = "profileCre"
+        startDestination = "main"
     ) {
 
         composable("splash") {
@@ -46,7 +46,7 @@ fun RootNavHost(
             authNavGraph(navController)
         }
 
-        navigation(startDestination = "home", route = "main") {
+        navigation(startDestination = "mainScreens", route = "main") {
             mainNavGraph(navController)
         }
 
