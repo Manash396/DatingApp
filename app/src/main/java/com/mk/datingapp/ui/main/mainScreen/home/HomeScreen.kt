@@ -1,5 +1,6 @@
 package com.mk.datingapp.ui.main.mainScreen.home
 
+import android.os.Build
 import androidx.compose.animation.Animatable
 import androidx.compose.animation.core.Animatable
 import androidx.compose.foundation.Image
@@ -7,6 +8,7 @@ import androidx.compose.foundation.background
 import androidx.compose.foundation.clickable
 import androidx.compose.foundation.gestures.detectDragGestures
 import androidx.compose.foundation.layout.Box
+import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.Row
 import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.fillMaxWidth
@@ -19,6 +21,7 @@ import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.filled.HeartBroken
 import androidx.compose.material.icons.filled.Info
+import androidx.compose.material.icons.filled.LocationOn
 import androidx.compose.material.icons.filled.Notifications
 import androidx.compose.material3.Icon
 import androidx.compose.material3.Text
@@ -29,10 +32,15 @@ import androidx.compose.runtime.remember
 import androidx.compose.runtime.rememberCoroutineScope
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
+import androidx.compose.ui.draw.blur
 import androidx.compose.ui.draw.clip
 import androidx.compose.ui.draw.rotate
 import androidx.compose.ui.graphics.Brush
 import androidx.compose.ui.graphics.Color
+import androidx.compose.ui.graphics.RenderEffect
+import androidx.compose.ui.graphics.TileMode
+import androidx.compose.ui.graphics.asComposeRenderEffect
+import androidx.compose.ui.graphics.graphicsLayer
 import androidx.compose.ui.input.key.Key
 import androidx.compose.ui.input.pointer.pointerInput
 import androidx.compose.ui.layout.ContentScale
@@ -46,6 +54,9 @@ import androidx.compose.ui.unit.sp
 import com.mk.datingapp.R
 import com.mk.datingapp.ui.theme.labelColor
 import kotlinx.coroutines.launch
+import android.graphics.Shader
+import androidx.compose.foundation.border
+import coil.compose.AsyncImage
 
 @Composable
 fun HomeScreen() {
@@ -77,7 +88,7 @@ fun HomeScreen() {
                 textAlign = TextAlign.Center
             )
 
-            Box{
+            Box {
                 // notification icon
                 Box(
                     modifier = Modifier
@@ -90,7 +101,7 @@ fun HomeScreen() {
                     contentDescription = "notification",
                     tint = labelColor,
                     modifier = Modifier
-                        .clickable{
+                        .clickable {
 
                         }
                 )
@@ -98,23 +109,33 @@ fun HomeScreen() {
         }
 
         // card view
-
-        Box(
-            modifier = Modifier.fillMaxSize(),
-            contentAlignment = Alignment.Center
+        Column(
+            modifier = Modifier
+                .fillMaxWidth()
+                .align(Alignment.Center)
         ) {
 
-            profiles.take(3).reversed().forEach { profile ->
+            Box(
+                modifier = Modifier.fillMaxSize(),
+                contentAlignment = Alignment.Center
+            ) {
 
-                key(profile.id) {
-                    SwipeCard(
-                        profile = profile,
-                        onSwipe = {
-                            profiles.remove(profile)
-                        }
-                    )
+                profiles.take(3).reversed().forEach { profile ->
+
+                    key(profile.id) {
+                        SwipeCard(
+                            profile = profile,
+                            onSwipe = {
+                                profiles.remove(profile)
+                            }
+                        )
+                    }
                 }
             }
+
+            // fav button icons and dislike buttons
+
+
         }
 
     }
@@ -124,8 +145,8 @@ fun HomeScreen() {
 fun SwipeCard(
     profile: Profile,
     onSwipe: () -> Unit
-){
-    val scope  = rememberCoroutineScope()
+) {
+    val scope = rememberCoroutineScope()
     val offsetX = remember { Animatable(0f) }
 
     val rotation = offsetX.value / 60f
@@ -167,12 +188,12 @@ fun SwipeCard(
                     }
                 )
             }
-    ){
+    ) {
 
 
         // MAIN IMAGE
-        Image(
-            painter = painterResource(id = profile.imgRes),
+        AsyncImage(
+            model =  profile.imgRes,
             contentDescription = null,
             contentScale = ContentScale.Crop,
             modifier = Modifier.fillMaxSize()
@@ -189,38 +210,124 @@ fun SwipeCard(
                 )
         )
 
+        // Location
+
+        Box(
+            modifier = Modifier
+                .align(Alignment.TopStart)
+                .padding(5.dp)
+        ) {
+
+            Box(
+                modifier = Modifier
+                    .matchParentSize()
+                    .clip(RoundedCornerShape(20.dp))
+                    .background(
+                        Brush.linearGradient(
+                            listOf(
+                                Color.White.copy(0.35f),
+                                Color.White.copy(0.25f)
+                            )
+                        )
+                    )
+                    .blur(20.dp)
+                    .border(
+                        width = 1.dp,
+                        color = Color.White.copy(alpha = 0.5f),
+                        shape = RoundedCornerShape(20.dp)
+                    )
+            )
+
+            Row(
+                modifier = Modifier
+                    .clip(RoundedCornerShape(20.dp))
+                    .background(Color.Transparent)
+                    .padding(horizontal = 8.dp, vertical = 4.dp),
+                verticalAlignment = Alignment.CenterVertically
+            ) {
+                Icon(
+                    imageVector = Icons.Default.LocationOn,
+                    contentDescription = null,
+                    modifier = Modifier.size(16.dp),
+                    tint = Color.DarkGray
+                )
+
+                Text(
+                    text = "2.5 km away",
+                    color = Color.DarkGray,
+                    fontSize = 12.sp
+                )
+
+            }
+        }
+
         //  SECOND IMAGE / BADGE (top corner)
+        
         Box(
             modifier = Modifier
                 .align(Alignment.TopEnd)
-                .padding(8.dp)
+                .padding(6.dp)
         ) {
+
+            Box(
+                modifier = Modifier
+                    .matchParentSize()
+                    .clip(RoundedCornerShape(20.dp))
+                    .background(
+                        Brush.linearGradient(
+                            listOf(
+                                Color.White.copy(0.35f),
+                                Color.White.copy(0.25f)
+                            )
+                        )
+                    )
+                    .blur(20.dp)
+                    .border(
+                        width = 1.dp,
+                        color = Color.White.copy(alpha = 0.5f),
+                        shape = RoundedCornerShape(20.dp)
+                    )
+            )
+
             Icon(
                 imageVector = Icons.Default.Info,
                 contentDescription = null,
-                modifier = Modifier.size(28.dp),
-                tint = labelColor
+                modifier = Modifier.size(28.dp)
+                    .padding(4.dp)
+                ,
+                tint = Color.DarkGray
             )
         }
 
         //  TEXT
-        Text(
-            text = "${profile.name}, ${profile.age}",
-            color = Color.White,
-            fontSize = 22.sp,
-            fontWeight = FontWeight.Bold,
+        Column(
             modifier = Modifier
                 .align(Alignment.BottomStart)
                 .padding(16.dp)
-        )
+        ) {
+            Text(
+                text = "${profile.name}, ${profile.age}",
+                color = Color.White,
+                fontSize = 22.sp,
+                fontWeight = FontWeight.Bold,
+            )
+
+            Text(
+                text = "Photographer",
+                color = Color.White,
+                fontSize = 14.sp,
+            )
+        }
+
     }
 }
 
 @Preview(showBackground = true, showSystemUi = true)
 @Composable
-fun HomeScreenPreview(){
+fun HomeScreenPreview() {
     HomeScreen()
 }
+
 data class Profile(
     val id: Int,
     val name: String,

@@ -10,6 +10,7 @@ data class ProfileCreationState(
     // Step 1
     val fullName : String = "",
     val userName : String = "",
+    val profession : String = "",
     val age : String = "",
     val gender : String = "",
     val location : String = "",

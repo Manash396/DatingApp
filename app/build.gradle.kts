@@ -113,6 +113,7 @@ dependencies {
     implementation(libs.androidx.credentials)
     implementation(libs.androidx.credentials.play.services.auth)
     implementation(libs.googleid)
+    implementation(libs.ui.graphics)
 
     testImplementation(libs.junit)
     androidTestImplementation(libs.androidx.junit)
@@ -141,4 +142,5 @@ dependencies {
 
     // coil
     implementation("io.coil-kt:coil-compose:2.6.0")
+
 }

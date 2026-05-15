@@ -72,6 +72,7 @@ fun StepOneScreen(
     var ageError by remember { mutableStateOf(false) }
     var presenceError by remember { mutableStateOf(false) }
     var genderError by remember { mutableStateOf(false) }
+    var professionError by remember { mutableStateOf(false) }
 
 //    -------------- Location ------------------------
     var requestLocation by remember { mutableStateOf(false) }
@@ -160,6 +161,22 @@ fun StepOneScreen(
                 isError = userNameError,
                 errorText = "Name required",
                 resetErrorMessage = { userNameError = false }
+            )
+
+            Text("PROFESSION", color = labelColor, fontSize = 12.sp)
+
+            Spacer(modifier = Modifier.height(10.dp))
+
+            AppTextField(
+                value = currentState.profession,
+                onValueChange = {
+                    onStateChanged(currentState.copy(profession = it))
+                    professionError = false
+                },
+                placeholder = "Enter profession",
+                isError = professionError,
+                errorText = "Fiels required",
+                resetErrorMessage = { professionError = false }
             )
 
 //            Spacer(modifier = Modifier.height(16.dp))
