@@ -193,10 +193,12 @@ fun SwipeCard(
 
         // MAIN IMAGE
         AsyncImage(
-            model =  profile.imgRes,
+            model = profile.imgRes,
             contentDescription = null,
             contentScale = ContentScale.Crop,
-            modifier = Modifier.fillMaxSize()
+            modifier = Modifier.fillMaxSize(),
+            placeholder = painterResource(R.drawable.placeholder),
+            error = painterResource(R.drawable.placeholder)
         )
 
         //  GRADIENT OVERLAY (for text readability)
@@ -262,7 +264,7 @@ fun SwipeCard(
         }
 
         //  SECOND IMAGE / BADGE (top corner)
-        
+
         Box(
             modifier = Modifier
                 .align(Alignment.TopEnd)
@@ -292,9 +294,9 @@ fun SwipeCard(
             Icon(
                 imageVector = Icons.Default.Info,
                 contentDescription = null,
-                modifier = Modifier.size(28.dp)
-                    .padding(4.dp)
-                ,
+                modifier = Modifier
+                    .size(28.dp)
+                    .padding(4.dp),
                 tint = Color.DarkGray
             )
         }
