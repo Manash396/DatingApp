@@ -20,6 +20,8 @@ class AuthRemoteDataSource @Inject constructor(
 
     suspend fun signInWithGoogle(idToken: String): Result<AuthUser> {
         return try {
+
+            // it convert the google token into firebase understandable format
             val firebaseCredential = GoogleAuthProvider.getCredential(
                 idToken,
                 null

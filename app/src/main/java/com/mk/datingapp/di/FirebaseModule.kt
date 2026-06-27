@@ -17,7 +17,7 @@ object FirebaseModule {
 
     @Provides
     @Singleton
-    fun provideFirebaseDatabase(
+    fun provideFirebaseAnalytics(
         @ApplicationContext context : Context
     ) :  FirebaseAnalytics {
         return FirebaseAnalytics.getInstance(context)

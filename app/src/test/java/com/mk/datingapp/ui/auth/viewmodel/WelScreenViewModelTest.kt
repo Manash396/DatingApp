@@ -57,7 +57,7 @@ class WelScreenViewModelTest {
 
     @Test
     fun trackScreenOnce_calledOnlyOnce(){
-        every { analyticsRepository.trackScreen(any()) } just Runs
+//        every { analyticsRepository.trackScreen(any()) } just Runs
 
         viewModel.trackScreenOnce()
         viewModel.trackScreenOnce()
