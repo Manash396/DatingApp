@@ -1,5 +1,6 @@
 package com.mk.datingapp.ui.auth.viewmodel
 
+import app.cash.turbine.test
 import com.mk.datingapp.domain.model.AuthUser
 import com.mk.datingapp.domain.repository.AnalyticsRepository
 import com.mk.datingapp.domain.repository.AuthRepository
@@ -8,6 +9,7 @@ import com.mk.datingapp.ui.auth.wel.WelScreenViewModel
 import com.mk.datingapp.util.MainDispatcherRule
 import io.mockk.Runs
 import io.mockk.coEvery
+import io.mockk.coVerify
 import io.mockk.every
 import io.mockk.just
 import io.mockk.mockk
@@ -17,6 +19,7 @@ import junit.framework.TestCase.assertFalse
 import junit.framework.TestCase.assertNull
 import junit.framework.TestCase.assertTrue
 import kotlinx.coroutines.ExperimentalCoroutinesApi
+import kotlinx.coroutines.delay
 import kotlinx.coroutines.launch
 import kotlinx.coroutines.test.advanceUntilIdle
 import kotlinx.coroutines.test.runCurrent
@@ -73,7 +76,8 @@ class WelScreenViewModelTest {
 
         viewModel.signInWithGoogle("token")
 
-        advanceUntilIdle()
+//        advanceUntilIdle()     // since you are using UnconfinedTestDispatcher if starts the immediately , no async behavior
+
 
         viewModel.clearError()
 
@@ -82,25 +86,25 @@ class WelScreenViewModelTest {
         assertNull(state.error)
     }
 
-    // error path test
-    @Test
-    fun signInWithGoogle_error_showDialog() = runTest {
+        // error path test
+        @Test
+        fun signInWithGoogle_error_showDialog() = runTest {
 
-        val errorMessage = "Login failed"
+            val errorMessage = "Login failed"
 
-        coEvery { authRepository.signInWithGoogle(any()) } returns Result.failure(Exception(errorMessage))
+            coEvery { authRepository.signInWithGoogle(any()) } returns Result.failure(Exception(errorMessage))
 
-        // WHEN
-        viewModel.signInWithGoogle("token")
+            // WHEN
+            viewModel.signInWithGoogle("token")
 
-        advanceUntilIdle()
+            advanceUntilIdle()
 
-        // THEN
-        val state = viewModel.state.value
+            // THEN
+            val state = viewModel.state.value
 
-        assertFalse(state.isLoading)
-        assertEquals(errorMessage, state.error)
-    }
+            assertFalse(state.isLoading)
+            assertEquals(errorMessage, state.error)
+        }
 
     //   success path test
     @Test
@@ -128,7 +132,7 @@ class WelScreenViewModelTest {
         // main testing part
         viewModel.signInWithGoogle("token")
 
-        advanceUntilIdle()
+        advanceUntilIdle()  // need here due to emit fun
         println(events)
 
         // then
@@ -141,6 +145,40 @@ class WelScreenViewModelTest {
 
         job.cancel()
     }
+
+    // for realtime emission testing using Turbine
+    @Test
+    fun signInWIthGoogle_success_existingUser_navToMain() = runTest {
+        val fakeUser = AuthUser("uid123", "test@gmail.com", "Manash")
+        coEvery { authRepository.signInWithGoogle(any())  } coAnswers {
+            delay(2000)  // real network call feel
+            Result.success(fakeUser)
+        }
+        coEvery {
+            authRepository.checkAndCreateUser(
+                any<String>(),
+                any<String>(),
+                any<String>()
+            )
+        } returns false
+
+        viewModel.state.test {
+
+            viewModel.signInWithGoogle("key")
+
+            assertFalse(awaitItem().isLoading)  // initial state
+
+            assertTrue(awaitItem().isLoading) // at the time of network call
+//
+            assertFalse(awaitItem().isLoading) // at Success
+
+            cancelAndIgnoreRemainingEvents()
+//            awaitComplete()   // don't use this because stateflow is infinite hot stream no completion
+        }
+
+        coVerify { authRepository.signInWithGoogle("key") }
+    }
+
 
     // new user test
     @Test

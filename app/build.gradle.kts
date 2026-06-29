@@ -140,6 +140,8 @@ dependencies {
     testImplementation("org.jetbrains.kotlinx:kotlinx-coroutines-test:1.7.3")
     testImplementation("io.mockk:mockk:1.13.8")
 
+    testImplementation("app.cash.turbine:turbine:0.12.1")
+
     // coil
     implementation("io.coil-kt:coil-compose:2.6.0")
 

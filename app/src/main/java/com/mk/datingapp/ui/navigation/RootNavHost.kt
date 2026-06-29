@@ -24,7 +24,7 @@ fun RootNavHost(
 
     NavHost(
         navController = navController,
-        startDestination = "main"
+        startDestination = "splash"
     ) {
 
         composable("splash") {

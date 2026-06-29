@@ -3,7 +3,7 @@ package com.mk.datingapp.ui.profile.creation
 import android.net.Uri
 
 data class ProfileCreationState(
-    val step: Int = 4,
+    val step: Int = 1,
     val isLoading :Boolean = false,
     val error : String? = null,
 
